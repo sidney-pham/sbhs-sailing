@@ -1,0 +1,24 @@
+{
+  "name": "sailing_program",
+  "version": "1.0.0",
+  "description": "SBHS Sailing Program",
+  "main": "server/app.js",
+  "scripts": {
+    "start": "nodemon server/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "TBC"
+  },
+  "author": "Sidney Pham",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "compression": "^1.6.2",
+    "express": "^4.15.2",
+    "pg": "^6.1.5"
+  },
+  "devDependencies": {
+    "nodemon": "^1.11.0"
+  }
+}
