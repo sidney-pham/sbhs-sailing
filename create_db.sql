@@ -48,7 +48,7 @@ CREATE TABLE News (
 -- NonStudents is for members without an SBHS Student ID.
 CREATE TABLE NonStudents (
   member_id     INTEGER PRIMARY KEY, -- Links to a row in the Members table.
-  username      VARCHAR(30),
+  username      VARCHAR(30) UNIQUE,
   password      TEXT
 );
 

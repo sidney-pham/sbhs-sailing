@@ -19,7 +19,7 @@ let membersRouter = express.Router();
 membersRouter.get('/', members.getAllMembers);
 membersRouter.post('/', members.createMember);
 membersRouter.get('/:id', members.lookupMember, members.getSingleMember);
-membersRouter.put('/:id', members.lookupMember, members.updateMember);
+membersRouter.patch('/:id', members.lookupMember, members.updateMember);
 membersRouter.delete('/:id', members.lookupMember, members.removeMember);
 
 
