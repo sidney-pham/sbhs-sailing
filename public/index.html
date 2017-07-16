@@ -1,48 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>SBHS Sailing</title>
-    <link rel="stylesheet" href="styles/style.css">
-    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>SBHS Sailing</title>
+  <link rel="stylesheet" href="styles/style.css">
+  <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+  <script src="https://use.fontawesome.com/32b00ec458.js"></script>
+  <script src="scripts/login.js"></script>
 </head>
 <body>
-    <header>
-        <div class="banner">
-            <h1>SBHS Sailing</h1>
-            <img src="images/sbhs_crest.png" alt="SBHS Crest">
-        </div>
-        <nav>
-            <ul class="navigation">
-                <li>
-                    <a href="#" id="home">HOME</a>
-                </li>
-                <li>
-                    <a href="#" id="rosters">ROSTERS</a>
-                </li>
-                <li>
-                    <a href="#" id="results">RESULTS</a>
-                </li>
-            </ul>
-        </nav>
-    </header>
-    <section>
-        <h2>New Post</h2>
-        <textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0"></textarea>
-        <button>Submit</button>
-    </section>
-    <section>
-        <h2>Latest News</h2>
-        <article class="news-item">
-            <h3>Dallas Yan</h3>
-            <h3>Happy New Year!</h3>
-            <h4>1st Jan, 2018</h4>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In motu et in statu corporis nihil inest, quod animadvertendum esse ipsa natura iudicet? Quid est igitur, cur ita semper deum appellet Epicurus beatum et aeternum? Est autem etiam actio quaedam corporis, quae motus et status naturae congruentis tenet; Quae sequuntur igitur? At iam decimum annum in spelunca iacet. Quae similitudo in genere etiam humano apparet.</p>
-
-            <p>Et nemo nimium beatus est; Itaque sensibus rationem adiunxit et ratione effecta sensus non reliquit. Quid ei reliquisti, nisi te, quoquo modo loqueretur, intellegere, quid diceret? Quae quo sunt excelsiores, eo dant clariora indicia naturae. Non dolere, inquam, istud quam vim habeat postea videro; Quid est, quod ab ea absolvi et perfici debeat? Sed in rebus apertissimis nimium longi sumus. Itaque vides, quo modo loquantur, nova verba fingunt, deserunt usitata. Primum in nostrane potestate est, quid meminerimus? Est enim effectrix multarum et magnarum voluptatum.</p>
-
-            <p>Duo Reges: constructio interrete. Disserendi artem nullam habuit. Venit ad extremum; An quod ita callida est, ut optime possit architectari voluptates? Illa videamus, quae a te de amicitia dicta sunt. Non enim iam stirpis bonum quaeret, sed animalis. Sit enim idem caecus, debilis. Sed plane dicit quod intellegit.</p>
-        </article>
-    </section>
+  <header>
+    <a href="/">
+      <img src="images/sbhs_crest.png" alt="SBHS Crest" id="sbhs-crest">
+    </a>
+    <h1 id="title">Sydney Boys High School Sailing Portal</h1>
+  </header>
+  <main>
+    <div class="login-container">
+      <h2 id="login-header">LOGIN</h2>
+      <!-- <a href="/login"> <--><a href="/dashboard.html">
+        <button class="trim-button sbhs-button">Login with SBHS Account</button>
+      </a>
+      <button class="text-button" id="non-sbhs-button">I don't have an SBHS Login!</button>
+      <div id="non-sbhs-login">
+        <input type="text" id="username" placeholder="Username:">
+        <input type="password" id="password" placeholder="Password:">
+        <button class="trim-button submit-button">Log In</button>
+        <button class="text-button" id="non-sbhs-login-back">
+          <i class="fa fa-chevron-left" aria-hidden="true"></i>Back
+        </button>
+      </div>
+    </div>
+  </main>
 </body>
 </html>

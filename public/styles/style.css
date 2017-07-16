@@ -11,21 +11,21 @@ button .fa {
   margin-right: 10px;
 }
 
-.banner {
+header {
   background-color: #194f73;
+  display: flex;
+  align-items: center;
 }
 
 header #sbhs-crest {
   height: 60px;
-  vertical-align: middle;
   margin: 10px 30px;
 }
 
 header h1 {
   font-size: 35px;
   color: white;
-  display: inline-block;
-  vertical-align: middle;
+  margin: 0;
 }
 
 .login-container {
@@ -33,7 +33,7 @@ header h1 {
   border: 3px solid brown;
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 900px) {
   .login-container {
     width: 800px;
   }
@@ -112,5 +112,5 @@ header h1 {
   width: 150px;
   height: 50px;
   border: 0;
-  margin: 0 auto;
+  margin: 0 auto 5px;
 }
