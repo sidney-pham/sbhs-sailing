@@ -1,0 +1,110 @@
+/* -------------------------------------------------------------------------- */
+/* Header */
+/* -------------------------------------------------------------------------- */
+#sbhs-crest {
+  height: 40px;
+}
+
+#title {
+  font-size: 25px;
+}
+
+.banner {
+  display: flex;
+  align-items: center;
+  margin-right: 30px;
+}
+
+.navigation {
+  list-style-type: none;
+  font-size: 18px;
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+
+.navigation a {
+  text-decoration: none;
+  color: white;
+  padding: 15px;
+}
+
+.navigation a:hover {
+  color: rgb(240, 240, 240);
+}
+
+.navigation .active a {
+  color: skyblue;
+}
+
+.navigation i {
+  margin-right: 6px;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Main Content */
+/* -------------------------------------------------------------------------- */
+main, footer {
+  background-color: white;
+  width: 100%;
+  padding: 30px 50px;
+}
+
+@media (min-width: 1200px) {
+  main, footer {
+    width: 90%;
+    margin: 0 auto;
+  }
+}
+
+.submit-button-small {
+  margin-left: 0;
+  font-size: 20px;
+  width: 100px;
+  height: 45px;
+  border: 0;
+}
+
+table {
+  border-collapse: collapse;
+  margin-bottom: 30px;
+  overflow-x: auto;
+}
+
+td, th {
+  padding: 10px;
+  text-align: center;
+}
+
+.new-roster-table {
+  border-collapse: separate;
+  border-spacing: 10px 0;
+  margin: 0 auto 30px;
+}
+
+.new-roster-table td {
+  padding: 0;
+}
+
+.new-roster-table td input {
+  margin: 0;
+  padding: 10px;
+  font-size: 16px;
+  text-align: center;
+  width: 100%;
+}
+
+.new-roster-table, .new-roster-table td, .new-roster-table th {
+  border: 0;
+}
+
+.new-roster-table th {
+  font-weight: normal;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Footer */
+/* -------------------------------------------------------------------------- */
+footer {
+  border-top: 2px solid brown;
+}

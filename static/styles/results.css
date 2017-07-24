@@ -1,0 +1,35 @@
+/* -------------------------------------------------------------------------- */
+/* Result Item */
+/* -------------------------------------------------------------------------- */
+.result-event-name, .result-event-date, .result-event-location {
+  margin: 0;
+}
+
+.result-event-name {
+  font-size: 24px;
+}
+
+.result-event-date, .result-event-location {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.result-event-header {
+  margin-bottom: 20px;
+}
+
+.result-item {
+  margin-bottom: 50px;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Search Box */
+/* -------------------------------------------------------------------------- */
+.results-search-box {
+  display: block;
+  font-size: 25px;
+  width: 60%;
+  height: 50px;
+  margin: 0 auto 50px;
+  padding: 15px;
+}
