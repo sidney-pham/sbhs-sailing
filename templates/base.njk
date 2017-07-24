@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %} | SBHS Sailing</title>
+    <link rel="stylesheet" href="/styles/style.css">
+    <link rel="stylesheet" href="/styles/logged-in.css">
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+    <script src="https://use.fontawesome.com/32b00ec458.js"></script>
+    {% block extra_head %}{% endblock %}
+  </head>
+  <body>
+    <header>
+      <div class="banner">
+        <a href="/">
+          <img src="images/sbhs_crest.png" alt="SBHS Crest" id="sbhs-crest">
+        </a>
+        <h1 id="title">SBHS Sailing Portal</h1>
+      </div>
+      <nav>
+        <ul class="navigation">
+          <li class="{{ 'active' if state == 'home' }}">
+            <a href="/home"><i class="fa fa-home" aria-hidden="true"></i>HOME</a>
+          </li>
+          <li class="{{ 'active' if state == 'rosters' }}">
+            <a href="/rosters"><i class="fa fa-id-card-o" aria-hidden="true"></i>ROSTERS</a>
+          </li>
+          <li class="{{ 'active' if state == 'results' }}">
+            <a href="/results"><i class="fa fa-newspaper-o" aria-hidden="true"></i>RESULTS</a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      {% block content %}{% endblock %}
+    </main>
+  </body>
+</html>

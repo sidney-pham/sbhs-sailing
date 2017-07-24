@@ -1,0 +1,90 @@
+{% extends 'base.njk' %}
+{% set state = 'rosters' %}
+{% block title %}Rosters{% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="/styles/rosters.css">
+{% endblock extra_head %}
+
+{% block content %}
+<section class="new-roster">
+  <article>
+    <h2>New Roster</h2>
+    <label class="new-roster-label" for="roster-event-name">Event Name</label>
+    <input type="text" class="new-roster-event-info" id="roster-event-name" placeholder="">
+    <label class="new-roster-label" for="roster-start-date">Start Date</label>
+    <input type="date" class="new-roster-event-info" id="roster-start-date" placeholder="">
+    <label class="new-roster-label" for="roster-end-date">End Date</label>
+    <input type="date" class="new-roster-event-info" id="roster-end-date" placeholder="">
+    <label class="new-roster-label" for="roster-location">Location</label>
+    <input type="text" class="new-roster-event-info" id="roster-location" placeholder="">
+    <table class="new-roster-table">
+      <thead>
+        <th>Skipper</th>
+        <th>Crew</th>
+        <th>Boat</th>
+        <th>Sail Number</th>
+      </thead>
+      <tbody>
+        <td><input type="text" placeholder=""></td>
+        <td><input type="text" placeholder=""></td>
+        <td><input type="text" placeholder=""></td>
+        <td><input type="text" placeholder=""></td>
+      </tbody>
+    </table>
+    <button class="trim-button submit-button">Submit</button>
+  </article>
+</section>
+<section class="rosters">
+  <!-- <h2>Rosters</h2> -->
+  <article class="roster-item">
+    <div class="roster-event-header">
+      <h3 class="roster-event-name">Saturday Sport</h3>
+      <h3 class="roster-event-date">Date: 07-01-2018 to 09-01-2018</h3>
+      <h3 class="roster-event-location">Location: Woollahra Sailing Club</h3>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Skipper</th>
+          <th>Crew</th>
+          <th>Boat</th>
+          <th>Sail Number</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>John Citizen</td>
+          <td>Jane Citizen</td>
+          <td>Lady Penrhyn</td>
+          <td>12</td>
+        </tr>
+      </tbody>
+    </table>
+  </article>
+  <article class="roster-item">
+    <div class="roster-event-header">
+      <h3 class="roster-event-name">CHS Sailing</h3>
+      <h3 class="roster-event-date">Date: 14-01-2018 to 14-01-2018</h3>
+      <h3 class="roster-event-location">Location: Woollahra Sailing Club</h3>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Skipper</th>
+          <th>Crew</th>
+          <th>Boat</th>
+          <th>Sail Number</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>John Citizen</td>
+          <td>Jane Citizen</td>
+          <td>Lady Penrhyn</td>
+          <td>12</td>
+        </tr>
+      </tbody>
+    </table>
+  </article>
+</section>
+{% endblock content %}
