@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "TBC"
+    "url": "https://github.com/sidney-pham/sbhs-sailing"
   },
   "author": "Sidney Pham",
   "license": "ISC",
@@ -16,7 +16,9 @@
     "body-parser": "^1.17.1",
     "compression": "^1.6.2",
     "express": "^4.15.2",
-    "pg": "^6.1.5"
+    "nunjucks": "^3.0.1",
+    "pg-promise": "^6.3.5",
+    "simple-oauth2": "^1.3.0"
   },
   "devDependencies": {
     "nodemon": "^1.11.0"
