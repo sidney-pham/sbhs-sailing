@@ -1,11 +1,22 @@
 // Dependencies and Setup
-let express = require('express'),
-  bodyParser = require('body-parser'),
-  compression = require('compression'),
-  members = require('./routes/members'),
-  app = express();
+const express = require('express');
+const nunjucks = require('nunjucks');
+const compression = require('compression');
+const bodyParser = require('body-parser');
+// const auth = require('./auth');
+// const pg = require('pg-promise');
+const app = express();
+
+// const db = pg('postgres://localhost:5432/sailing');
 
 const port = parseInt(process.argv[2], 10) || process.env.PORT || '3000';
+
+// Nunjucks
+app.set('view engine', 'njk');
+const nunjucksEnv = nunjucks.configure(__dirname + '/../templates', {
+  watch: true,
+  express: app
+});
 
 // Compress response bodies for all requests.
 app.use(compression());
@@ -13,21 +24,16 @@ app.use(compression());
 // Enable reading of POST bodies.
 app.use(bodyParser.json({type: 'application/json'}));
 
-// Routers
-let membersRouter = express.Router();
+// Serve static files at ../static to /.
+app.use(express.static(__dirname + '/../static'));
 
-membersRouter.get('/', members.getAllMembers);
-membersRouter.post('/', members.createMember);
-membersRouter.get('/:id', members.lookupMember, members.getSingleMember);
-membersRouter.patch('/:id', members.lookupMember, members.updateMember);
-membersRouter.delete('/:id', members.lookupMember, members.removeMember);
+// Get config file and call auth function with appropriate arguments.
+// var config = require('./config').config;
+// auth(app, config.clientId, config.clientSecret, config.host + ":" + port);
 
+app.use(require('./routes'));
 
-
-
-
-app.use('/api/member', membersRouter);
-
+// Listen for connections.
 app.listen(port, function() {
   console.log(`App listening on port ${port}!`);
 });
