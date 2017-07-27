@@ -9,6 +9,14 @@
   font-size: 25px;
 }
 
+header {
+  padding: 0 30px;
+}
+
+header nav {
+  flex-grow: 1;
+}
+
 .banner {
   display: flex;
   align-items: center;
@@ -38,7 +46,16 @@
 }
 
 .navigation i {
-  margin-right: 6px;
+  margin-right: 0.5em;
+}
+
+.navigation .fa-caret-down {
+  margin-left: 0.2em;
+  margin-right: 0;
+}
+
+.navigation .user-profile {
+  margin-left: auto;
 }
 
 /* -------------------------------------------------------------------------- */

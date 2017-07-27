@@ -1,0 +1,35 @@
+{% extends 'base.njk' %}
+
+{% block extra_head_base %}
+<link rel="stylesheet" href="/styles/logged-in.css">
+{% endblock %}
+
+{% block header %}
+<header>
+  <div class="banner">
+    <a href="/">
+      <img src="images/sbhs_crest.png" alt="SBHS Crest" id="sbhs-crest">
+    </a>
+    <h1 id="title">SBHS Sailing Portal</h1>
+  </div>
+  <nav>
+    <ul class="navigation">
+      <li class="{{ 'active' if state == 'home' }}">
+        <a href="/home"><i class="fa fa-home" aria-hidden="true"></i>HOME</a>
+      </li>
+      <li class="{{ 'active' if state == 'rosters' }}">
+        <a href="/rosters"><i class="fa fa-id-card-o" aria-hidden="true"></i>ROSTERS</a>
+      </li>
+      <li class="{{ 'active' if state == 'results' }}">
+        <a href="/results"><i class="fa fa-newspaper-o" aria-hidden="true"></i>RESULTS</a>
+      </li>
+      <li class="user-profile">
+        <a href="/logout"><i class="fa fa-user" aria-hidden="true"></i>{{ user.name }}<i class="fa fa-caret-down" aria-hidden="true"></i></a>
+        <ul class="dropdown-menu">
+          {# <li><a href="#"></a></li> #}
+        </ul>
+      </li>
+    </ul>
+  </nav>
+</header>
+{% endblock %}

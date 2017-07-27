@@ -1,6 +1,6 @@
 .login-container {
   margin: 60px auto;
-  border: 3px solid brown;
+  box-shadow: 0 0 10px 0 white;
   padding: 50px;
   background-color: white;
 }
@@ -27,11 +27,29 @@
   margin: 0 auto;
 }
 
-#non-sbhs-login > input {
+#non-sbhs-login input {
   font-size: 20px;
   display: block;
   width: 100%;
   height: 50px;
-  margin-bottom: 30px;
   padding: 0 20px;
+}
+
+#non-sbhs-login #username {
+  margin-bottom: 30px;
+}
+
+#login-form .login-error {
+  border: 1px solid indianred;
+}
+
+.login-error-text {
+  margin: 3px 0 0 0;
+  font-size: 16px;
+  font-weight: lighter;
+  color: crimson;
+}
+
+.submit-button {
+  margin-top: 30px;
 }
