@@ -3,11 +3,10 @@ const express = require('express');
 const nunjucks = require('nunjucks');
 const compression = require('compression');
 const bodyParser = require('body-parser');
+const session = require('express-session');
+var FileStore = require('session-file-store')(session);
 // const auth = require('./auth');
-// const pg = require('pg-promise');
 const app = express();
-
-// const db = pg('postgres://localhost:5432/sailing');
 
 const port = parseInt(process.argv[2], 10) || process.env.PORT || '3000';
 
@@ -22,7 +21,17 @@ const nunjucksEnv = nunjucks.configure(__dirname + '/../templates', {
 app.use(compression());
 
 // Enable reading of POST bodies.
+// app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json({type: 'application/json'}));
+
+// express-session setup.
+app.use(session({
+  secret: 'secret',
+  store: new FileStore(),
+  cookie: {
+    maxAge: 60 * 60 * 1000 // 1 hour.
+  }
+}));
 
 // Serve static files at ../static to /.
 app.use(express.static(__dirname + '/../static'));
