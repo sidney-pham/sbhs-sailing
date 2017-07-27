@@ -8,7 +8,7 @@ body {
 }
 
 button .fa {
-  margin-right: 10px;
+  margin-right: 0.5em;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -22,7 +22,7 @@ header {
 
 #sbhs-crest {
   height: 60px;
-  margin: 10px 30px;
+  margin: 10px 30px 10px 0;
 }
 
 #title {
@@ -46,8 +46,8 @@ header {
 /* Transition adapted from http://ianlunn.github.io/Hover/ */
 /* To use, add another class specifying width, height, font-size and anything else.*/
 .trim-button {
-  background-color: #194f73;
-  color: white;
+  color: #194f73;
+  background-color: white;
   display: block;
   transform: perspective(1px) translateZ(0);
   box-shadow: 0 0 1px transparent;
@@ -56,8 +56,8 @@ header {
 }
 
 .trim-button:hover {
-  color: #194f73;
-  background-color: white;
+  background-color: #194f73;
+  color: white;
   cursor: pointer;
 }
 
