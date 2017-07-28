@@ -64,5 +64,8 @@ typings/
 
 # End of https://www.gitignore.io/api/node
 
+# Config
+server/config.js
+
 # session-file-store
 sessions/

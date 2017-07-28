@@ -9,10 +9,6 @@
   font-size: 25px;
 }
 
-header {
-  padding: 0 30px;
-}
-
 header nav {
   flex-grow: 1;
 }

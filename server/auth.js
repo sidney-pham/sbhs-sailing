@@ -28,7 +28,7 @@ module.exports = function(app, clientId, clientSecret, host) {
     const authorizationUri = oauth2.authorizationCode.authorizeURL({
         redirect_uri: redirectUri,
         scope: 'all-ro',
-        state: '' // What do I do with this?
+        state: ''
     });
 
     // Redirect login to SBHS Authorization endpoint.

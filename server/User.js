@@ -10,7 +10,7 @@ class User {
     this.surname = data.surname;
     this.email = data.email;
     this.phone = data.phone;
-    this.username = data.username;
+    this.username = data.username; // TODO: Remove?
     this.student_id = data.student_id;
 
     this.id = data.id;
@@ -91,8 +91,7 @@ class User {
   }
 
   static getById(userId) {
-    const query = 'SELECT first_name, surname, email, phone, username, student_id \
-                    FROM Members WHERE id = $1 LIMIT 1';
+    const query = 'SELECT * FROM Members WHERE id = $1 LIMIT 1';
     return db.one(query, [userId]).then(data => {
       return new User(data);
     }).catch(err => {
@@ -104,8 +103,18 @@ class User {
   }
 }
 
+// TODO: Implement this.
 class DefaultUser extends User {
-  // ...
+  constructor() {
+    this.first_name = 'John';
+    this.surname = 'Citizen';
+    this.email = 'johncitizen@student.sbhs.nsw.edu.au';
+    this.phone = '123456789';
+    this.username = 'johncitizen'; // TODO: Remove?
+    this.student_id = '123';
+
+    this.id = null;
+  }
 }
 
 module.exports = {

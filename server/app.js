@@ -36,11 +36,7 @@ app.use(session({
 // Serve static files at ../static to /.
 app.use(express.static(__dirname + '/../static'));
 
-// Get config file and call auth function with appropriate arguments.
-// var config = require('./config').config;
-// auth(app, config.clientId, config.clientSecret, config.host + ":" + port);
-
-app.use(require('./routes'));
+app.use(require('./routes')(port));
 
 // Listen for connections.
 app.listen(port, function() {
