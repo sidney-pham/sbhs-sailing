@@ -2,11 +2,12 @@ module.exports = port => {
   const express = require('express');
   const path = require('path');
   const db = require('./db');
-  const {User, DefaultUser} = require('./User');
+  const User = require('./User');
 
   const router = express.Router();
 
   router.get('/', (req, res, next) => {
+    console.log('checkAuth:', req.session.userId);
     if (req.session.userId) {
       res.redirect('/home');
     } else {
@@ -113,8 +114,8 @@ module.exports = port => {
   const redirectUri = 'http://' + config.host + ':' + port + '/callback';
   const oauth2 = require('simple-oauth2').create(credentials);
 
-  // Redirect login to SBHS Authorization endpoint.
-  router.get('/sbhslogin', (req, res) => {
+  // Redirect login to SBHS Authorisation endpoint.
+  router.get('/login/sbhs', (req, res) => {
     const authorizationUri = oauth2.authorizationCode.authorizeURL({
       redirect_uri: redirectUri,
       scope: 'all-ro',
@@ -130,6 +131,7 @@ module.exports = port => {
     res.redirect('/');
   });
 
+  const request = require('request-promise-native');
   // Parse authorization token and request access token on callback.
   router.get('/callback', (req, res) => {
     // The code in the query parameter from authorization endpoint.
@@ -144,11 +146,33 @@ module.exports = port => {
       const token = oauth2.accessToken.create(result);
       console.log('Access token received 🎉🎉🎉.', token);
 
-      const query = 'INSERT INTO Members DEFAULT VALUES RETURNING id;';
-      db.one()
-      req.session.token = token;
-      req.session.user_id = id;
-      res.redirect('/');
+      request('https://student.sbhs.net.au/api/details/userinfo.json', {
+        'auth': {
+          'bearer': token.token.access_token
+        }
+      }).then(data => {
+        data = JSON.parse(data);
+        console.log('User data:', data);
+        const studentId = data.username;
+        const query = 'SELECT id, is_disabled FROM Members WHERE student_id = $1 LIMIT 1';
+        db.one(query, [studentId]).then(data => {
+          if (data.is_disabled) {
+            return console.error(`User ${studentId}'s account is disabled.`);
+            throw 'Account Disabled'; // TODO: Fix this.
+          }
+
+          console.log(studentId, 'logged in.');
+          req.session.userId = data.id;
+          res.redirect('/');
+        }).catch(err => {
+          console.log(`User ${studentId} not in Members table (or account disabled).`);
+          res.json({
+            'message': 'User not authorised to use Sailing Portal.'
+          });
+        });
+      }).catch(err => {
+        console.error('Failed to get user info from SBHS api:', err);
+      });
     }).catch(error => {
       // Errors may be due to proxy, check env variables or npm settings.
       console.error('Access Token Error', error.message);
