@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
   nonSbhsButton.addEventListener('click', event => {
     nonSbhsLogin.style.display = '';
     sbhsLogin.style.display = 'none';
-    document.querySelector('#username').focus();
+    document.querySelector('#email').focus();
   });
 
   nonSbhsBack.addEventListener('click', event => {
@@ -26,9 +26,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Handle log in.
   const submitButton = document.querySelector('#non-sbhs-login .submit-button');
-  const usernameBox = document.querySelector('#username');
+  const emailBox = document.querySelector('#email');
 
-  usernameBox.addEventListener('keypress', event => {
+  emailBox.addEventListener('keypress', event => {
     if (event.key == 'Enter') {
       alert('enter');
     }
@@ -36,13 +36,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   submitButton.addEventListener('click', event => {
     event.preventDefault();
-    const username = document.querySelector('#username').value;
+    const email = document.querySelector('#email').value;
     const password = document.querySelector('#password').value;
     submitButton.textContent = 'Logging in...';
     fetch('/login', {
       method: 'POST',
       headers: new Headers({'Content-Type': 'application/json'}),
-      body: JSON.stringify({username: username, password: password})
+      body: JSON.stringify({email: email, password: password})
     }).then(res => {
       // Get JSON data from Response object.
       return res.json();
@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Logged in.
         location.reload();
       } else {
-        // Wrong username or password.
+        // Wrong email or password.
         console.log(data);
         document.querySelector('.login-error-text').textContent = data.message;
         for (const element of document.querySelectorAll('#login-form input')) {
