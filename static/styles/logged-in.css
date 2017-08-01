@@ -57,17 +57,14 @@ header nav {
 /* -------------------------------------------------------------------------- */
 /* Main Content */
 /* -------------------------------------------------------------------------- */
+main {
+  min-height: 100vh;
+}
+
 main, footer {
   background-color: white;
   width: 100%;
   padding: 30px 50px;
-}
-
-@media (min-width: 1200px) {
-  main, footer {
-    width: 90%;
-    margin: 0 auto;
-  }
 }
 
 .submit-button-small {

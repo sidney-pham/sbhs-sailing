@@ -1,0 +1,22 @@
+{% extends 'base-logged-in.njk' %}
+
+{% block title %}Start{% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="/styles/start.css">
+{% endblock extra_head %}
+
+{% block content %}
+<form class="start-form" action="/start" method="post">
+  <h2>Welcome!</h2>
+  <h3>We need a couple of details. Don't worry, you can change these at any time.</h3>
+  <label for="first-name">First Name</label>
+  <input type="text" name="first_name" id="first-name" placeholder="Required" value="{{ user.first_name }}" required>
+  <label for="surname">Surname</label>
+  <input type="text" name="surname" id="surname" placeholder="Required" value="{{ user.surname }}" required>
+  <label for="email">Email</label>
+  <input type="email" name="email" id="email" placeholder="" value="{{ user.email }}">
+  <label for="phone">Phone</label>
+  <input type="phone" name="phone" id="phone" placeholder="" value="{{ user.phone }}">
+  <button type="submit" class="trim-button submit-button">Submit</button>
+</form>
+{% endblock %}
