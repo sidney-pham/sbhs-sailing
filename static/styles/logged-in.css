@@ -118,3 +118,25 @@ td, th {
 footer {
   border-top: 2px solid brown;
 }
+
+@media (max-width: 1000px) {
+  .navigation i:not(.fa-caret-down) {
+    display: none !important;
+  }
+}
+
+@media (max-width: 850px) {
+  .banner #title {
+    display: none;
+  }
+
+  .banner {
+    margin-right: 0;
+  }
+}
+
+@media (max-width: 700px) {
+  .navigation a {
+    padding: 5px;
+  }
+}
