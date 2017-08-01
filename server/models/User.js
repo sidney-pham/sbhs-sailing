@@ -54,7 +54,11 @@ class User {
   static authenticate(email, password) {
     const query = 'SELECT id, password, is_disabled FROM Members WHERE email = $1 LIMIT 1';
 
-    return db.one(query, [email]).then(user => {
+    return db.oneOrNone(query, [email]).then(user => {
+      if (!user) {
+        throw new Error('Incorrect username or password.');
+      }
+
       if (user.password === password) {
         // User account disabled.
         if (user.is_disabled) {
@@ -65,7 +69,7 @@ class User {
         return user.id;
       } else {
         // Wrong password.
-        throw new Error('Incorrect password.');
+        throw new Error('Incorrect username or password.');
       }
     });
   }
