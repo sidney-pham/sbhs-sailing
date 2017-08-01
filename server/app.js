@@ -4,8 +4,8 @@ const nunjucks = require('nunjucks');
 const compression = require('compression');
 const bodyParser = require('body-parser');
 const session = require('express-session');
-var FileStore = require('session-file-store')(session);
-// const auth = require('./auth');
+const FileStore = require('session-file-store')(session);
+const config = require('./config');
 const app = express();
 
 const port = parseInt(process.argv[2], 10) || process.env.PORT || '3000';
@@ -21,12 +21,12 @@ const nunjucksEnv = nunjucks.configure(__dirname + '/../templates', {
 app.use(compression());
 
 // Enable reading of POST bodies.
-// app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json({type: 'application/json'}));
 
 // express-session setup.
 app.use(session({
-  secret: 'secret',
+  secret: config.session.secret,
   store: new FileStore(),
   cookie: {
     maxAge: 60 * 60 * 1000 // 1 hour.
@@ -36,7 +36,8 @@ app.use(session({
 // Serve static files at ../static to /.
 app.use(express.static(__dirname + '/../static'));
 
-app.use(require('./routes')(port));
+// Use router.
+app.use(require('./routers/routes')(port));
 
 // Listen for connections.
 app.listen(port, function() {
