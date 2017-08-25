@@ -86,7 +86,22 @@ header {
   margin: 0 auto 5px;
 }
 
-input:not([type="file"]), table, td, th {
+/* Set standard border color of textboxes and remove outlines. */
+input:not([type="file"]), textarea {
   border: 1px solid darkgrey;
   outline: 0;
+}
+
+input:not([type="file"]):focus, textarea:focus {
+  border: 1px solid black;
+}
+
+/* Error list for form validation */
+.error-list {
+  margin: 3px 0 0 0;
+  font-size: 16px;
+  font-weight: lighter;
+  color: crimson;
+  list-style-type: none;
+  padding: 0;
 }

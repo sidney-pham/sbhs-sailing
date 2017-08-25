@@ -71,7 +71,7 @@ main, footer {
   margin-left: 0;
   font-size: 20px;
   width: 100px;
-  height: 45px;
+  height: 40px;
   border: 0;
 }
 
@@ -110,6 +110,10 @@ td, th {
 
 .new-roster-table th {
   font-weight: normal;
+}
+
+table, td, th {
+  border: 1px solid darkgrey;
 }
 
 /* -------------------------------------------------------------------------- */

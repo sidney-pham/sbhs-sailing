@@ -67,6 +67,49 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
   });
+
+  // These functions are in the event handler because they use elements from the DOM.
+  function showError(text) {
+    document.querySelector('.login-error-text').textContent = text;
+    for (const element of document.querySelectorAll('#login-form input')) {
+      element.classList.add('invalid');
+    }
+  }
+
+  function clearError() {
+    document.querySelector('.login-error-text').textContent = '';
+    for (const element of document.querySelectorAll('#login-form input')) {
+      element.classList.remove('invalid');
+    }
+  }
+
+  function getErrorMsg(name, validity) {
+    let message;
+    switch (true) {
+      case validity.valueMissing:
+        message = `${name} cannot be empty.`;
+        break;
+      case validity.tooLong:
+        message = `${name} too long.`;
+        break;
+      case validity.rangeOverflow:
+        message = `${name} too big.`;
+        break;
+      case validity.rangeUnderflow:
+        message = `${name} too small.`;
+        break;
+      default:
+        message = `Invalid ${name}.`;
+
+    return message;
+    }
+
+    return sentenceCase(message);
+  }
+
+  function sentenceCase(text) {
+    return text[0].toUpperCase() + (text.slice(1)).toLowerCase();
+  }
 });
 
 // function fetch(url, data) {
@@ -84,46 +127,3 @@ document.addEventListener('DOMContentLoaded', () => {
 //     req.send(data.body);
 //   });
 // }
-
-
-function showError(text) {
-  document.querySelector('.login-error-text').textContent = text;
-  for (const element of document.querySelectorAll('#login-form input')) {
-    element.classList.add('invalid');
-  }
-}
-
-function clearError() {
-  document.querySelector('.login-error-text').textContent = '';
-  for (const element of document.querySelectorAll('#login-form input')) {
-    element.classList.remove('invalid');
-  }
-}
-
-function getErrorMsg(name, validity) {
-  let message;
-  switch (true) {
-    case validity.valueMissing:
-      message = `${name} cannot be empty.`;
-      break;
-    case validity.tooLong:
-      message = `${name} too long.`;
-      break;
-    case validity.rangeOverflow:
-      message = `${name} too big.`;
-      break;
-    case validity.rangeUnderflow:
-      message = `${name} too small.`;
-      break;
-    default:
-      message = `Invalid ${name}.`;
-
-  return message;
-  }
-
-  return sentenceCase(message);
-}
-
-function sentenceCase(text) {
-  return text[0].toUpperCase() + (text.slice(1)).toLowerCase();
-}

@@ -8,11 +8,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const phone = document.querySelector('#phone');
   const loginError = document.querySelector('.error-list');
 
+  // Autofocus first field.
   firstName.focus();
 
+  // Attach event handlers to each input control.
   for (const element of document.querySelectorAll('#start-form input')) {
     element.addEventListener('input', event => {
-      event.preventDefault();
       if (!element.checkValidity()) {
         element.classList.add('invalid');
       } else {
@@ -21,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Validate form on submit, and show error messages.
   form.addEventListener('submit', event => {
     let invalid = false;
     clearError();
@@ -83,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
       default:
         message = `Invalid ${name}.`;
 
-    return message;
+      return message;
     }
 
     return sentenceCase(message);
