@@ -2,11 +2,11 @@
 module.exports = port => {
   const express = require('express');
   const User = require('../models/User');
+  const Post = require('../models/Post');
   const sbhsAuth = require('../lib/sbhs-oauth2');
 
   // Use login router.
   let router = express.Router();
-
   require('./login')(router);
 
   // Middleware function to ensure user permitted to access logged-in content.
@@ -89,6 +89,28 @@ module.exports = port => {
       res.redirect('/');
     }).catch(() => {
       res.render('start');
+    });
+  });
+
+  router.get('/news', (req, res) => {
+    const params = req.query; // TODO
+    Post.getPosts().then(posts => {
+      res.json(posts);
+    });
+  });
+
+  router.post('/news', checkAuth, (req, res) => {
+    const {title, content} = req.body;
+    console.log(req.body);
+    Post.addPost({id: req.user.id, title, content}).then(() => {
+      res.json({
+        'success': true
+      });
+    }).catch(err => {
+      res.json({
+        'success': false,
+        'message': err.message
+      });
     });
   });
 

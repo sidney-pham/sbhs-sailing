@@ -37,7 +37,7 @@ app.use(session({
 app.use(express.static(__dirname + '/../static'));
 
 // Use router.
-app.use(require('./routers/routes')(port));
+app.use(require('./routes/main')(port));
 
 // Listen for connections.
 app.listen(port, function() {
