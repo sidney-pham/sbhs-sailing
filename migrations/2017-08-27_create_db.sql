@@ -21,6 +21,15 @@ CREATE TABLE IF NOT EXISTS News (
   title               TEXT,
   content             TEXT,
   md_content          TEXT,
-  created_by          INTEGER REFERENCES Members(id), -- Links to a row in the Members table.
-  modified_by         INTEGER REFERENCES Members(id)-- Links to a row in the Members table.
+  likes               INTEGER DEFAULT 0,
+  liked_by            INTEGER[],
+  created_by          INTEGER REFERENCES Members, -- Links to a row in the Members table.
+  modified_by         INTEGER REFERENCES Members-- Links to a row in the Members table.
+);
+
+-- Likes contains likes for articles.
+CREATE TABLE IF NOT EXISTS Likes (
+  post_id      INTEGER REFERENCES News ON DELETE CASCADE,
+  member_id      INTEGER REFERENCES Members ON DELETE CASCADE,
+  UNIQUE (post_id, member_id)
 );

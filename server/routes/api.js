@@ -42,18 +42,24 @@ router.use(checkAuth);
 
 router.get('/news', (req, res) => {
   const params = req.query;
-  Post.get().then(posts => {
-    res.json(posts);
+  Post.get(req.user.id).then(posts => {
+    res.json({
+      'success': true,
+      'data': posts
+    });
   }).catch(err => {
     console.log(err);
-    res.status(500).json(err);
+    res.status(500).json({
+      'success': false,
+      'message': err.message
+    });
   });
 });
 
 router.post('/news', (req, res) => {
   const {title, content} = req.body;
   console.log(req.body);
-  Post.addPost({created_by: req.user.id, title, content}).then(() => {
+  Post.add({created_by: req.user.id, title, content}).then(() => {
     res.json({
       'success': true
     });
@@ -71,7 +77,7 @@ router.put('/news/:post_id', (req, res) => {
   console.log(req.body);
   console.log(title, content);
 
-  Post.edit(post_id, {edited_by: 1, title, content}).then(newPost => {
+  Post.edit(post_id, {edited_by: 1, title, content}).then(newPost => { // TODO: 1.
     res.json(Object.assign({
       'success': true,
       'message': `News item ${post_id} updated.`
@@ -84,7 +90,7 @@ router.put('/news/:post_id', (req, res) => {
   });
 });
 
-router.delete('/news/:post_id', (req, res) => {
+router.delete('/news/:post_id', (req, res) => { // TODO: auth.
   const post_id = req.params.post_id;
 
   Post.delete(post_id).then(() => {
@@ -99,5 +105,23 @@ router.delete('/news/:post_id', (req, res) => {
     });
   });
 });
+
+router.get('/news/like/:post_id', (req, res) => {
+  const post_id = req.params.post_id;
+
+  return Post.like(post_id, req.user.id).then(data => {
+    console.log(data);
+    res.json({
+      'success': true,
+      'like_status': data.like_status,
+      'like_count': data.count
+    });
+  }).catch(err => {
+    res.json({
+      'success': false,
+      'message': err.message
+    });
+  });
+})
 
 module.exports = router;

@@ -121,15 +121,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
 class Post {
   constructor(data) {
+    this.id = data.id;
     this.title = data.title;
     this.content = data.content;
     this.mdContent = data.md_content;
+    this.likes = data.like_count;
+    this.user_liked = data.user_liked;
     this.created_at = data.created_at;
+    this.created_at_relative = data.created_at_relative;
     this.created_by = data.created_by;
     this.author_name = data.author_name;
   }
 
-  displayPost() {
+  display() {
     const newsItem = document.createElement('article');
     newsItem.classList.add('news-item');
 
@@ -141,15 +145,21 @@ class Post {
     title.classList.add('news-item-title');
     title.textContent = this.title;
 
+    const likes = document.createElement('div');
+    likes.classList.add('news-item-likes');
+    likes.textContent = this.likes + (this.likes == 1 ? ' like' : ' likes');
+
     const date = document.createElement('time');
+    date.classList.add('news-item-date');
     const createdAt = new Date(this.created_at);
     date.setAttribute('title', createdAt.toUTCString());
     date.setAttribute('datetime', createdAt.toISOString());
-    date.textContent = this.date;
+    date.textContent = this.created_at_relative;
 
-    const dateContainer = document.createElement('h4');
-    dateContainer.classList.add('news-item-date');
-    dateContainer.appendChild(date);
+    const dateAndLikesContainer = document.createElement('h4');
+    dateAndLikesContainer.classList.add('news-item-date-and-likes');
+    dateAndLikesContainer.appendChild(likes);
+    dateAndLikesContainer.appendChild(date);
 
     const contentContainer = document.createElement('div');
     contentContainer.classList.add('news-item-content');
@@ -175,11 +185,19 @@ class Post {
     likeA.href= 'javascript: void 0;';
     likeA.setAttribute('title', 'Like');
     const likeButton = document.createElement('i');
+    const likeText = document.createTextNode('Like');
+    if (this.user_liked) {
+      likeButton.classList.add('fa-heart');
+      likeText.textContent = 'Liked';
+      likeA.classList.add('action-like-liked');
+    } else {
+      likeButton.classList.add('fa-heart-o');
+      likeText.textContent = 'Like';
+      likeA.classList.remove('action-like-liked');
+    }
     likeButton.classList.add('fa');
-    likeButton.classList.add('fa-heart-o');
     likeButton.setAttribute('aria-hidden', 'true');
     likeA.appendChild(likeButton);
-    const likeText = document.createTextNode('Like');
     likeA.appendChild(likeText);
 
     const editA = document.createElement('a');
@@ -232,7 +250,7 @@ class Post {
 
     newsItem.appendChild(author);
     newsItem.appendChild(title);
-    newsItem.appendChild(dateContainer);
+    newsItem.appendChild(dateAndLikesContainer);
     newsItem.appendChild(contentContainer);
     newsItem.appendChild(actionsContainer);
 
@@ -241,10 +259,33 @@ class Post {
 
     // Event handlers for each post.
     likeA.addEventListener('click', event => {
-      likeButton.classList.remove('fa-heart-o');
-      likeButton.classList.add('fa-heart');
-      likeText.textContent = 'Liked';
-      likeA.classList.add('action-like-liked');
+      console.log(this.title);
+      this.like().then(data => {
+        // Toggle like button.
+        if (data.like_status === 'liked') {
+          likeButton.classList.remove('fa-heart-o');
+          likeButton.classList.add('fa-heart');
+          likeText.textContent = 'Liked';
+          likeA.classList.add('action-like-liked');
+        } else { // 'unliked'
+          likeButton.classList.remove('fa-heart');
+          likeButton.classList.add('fa-heart-o');
+          likeText.textContent = 'Like';
+          likeA.classList.remove('action-like-liked');
+        }
+        // Update like count.
+        this.likes = data.like_count;
+        likes.textContent = this.likes + (this.likes == 1 ? ' like' : ' likes');
+      });
+    });
+  }
+
+  like() {
+    return fetch(`/api/news/like/${this.id}`, {
+      credentials: 'include'
+    }).then(res => {
+      // Get JSON data from Response object.
+      return res.json();
     });
   }
 
@@ -255,33 +296,39 @@ class Post {
       // Get JSON data from Response object.
       return res.json();
     }).then(posts => {
-      console.log(posts);
       // posts: array of data objects sorted new->old.
-      // Clear all posts.
-      const latestNews = document.querySelector('.latest-news');
+      console.log(posts);
+      if (posts.success) {
+        posts = posts.data;
+        // Clear all posts.
+        const latestNews = document.querySelector('.latest-news');
 
-      const noPostsMessage = document.querySelector('.no-posts-message');
-      if (noPostsMessage) {
-        latestNews.removeChild(noPostsMessage);
-      }
+        const latestNewsMessage = document.querySelector('.latest-news-message');
+        if (latestNewsMessage) {
+          latestNews.removeChild(latestNewsMessage);
+        }
 
-      let newsItem = document.querySelector('.latest-news .news-item');
-      while (newsItem) {
-        latestNews.removeChild(newsItem);
-        newsItem = document.querySelector('.latest-news .news-item');
-      }
+        let newsItem = document.querySelector('.latest-news .news-item');
+        while (newsItem) {
+          latestNews.removeChild(newsItem);
+          newsItem = document.querySelector('.latest-news .news-item');
+        }
 
-      if (posts.length === 0) {
-        const noPosts = document.createElement('p');
-        noPosts.classList.add('no-posts-message');
-        noPosts.textContent = 'No posts yet!';
-        latestNews.appendChild(noPosts);
-      }
+        if (posts.length === 0) {
+          const noPosts = document.createElement('p');
+          noPosts.classList.add('latest-news-message');
+          noPosts.textContent = 'No posts yet!';
+          latestNews.appendChild(noPosts);
+        }
 
-      // Display each new post.
-      for (const postData of posts) {
-        const post = new Post(postData);
-        post.displayPost();
+        // Display each new post.
+        for (const postData of posts) {
+          const post = new Post(postData);
+          post.display();
+        }
+      } else { // Some error.
+        const latestNewsMessage = document.querySelector('.no-posts-message');
+        latestNewsMessage.textContent = 'Error:', data.message;
       }
     }).catch(err => {
       console.log(err);

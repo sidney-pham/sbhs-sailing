@@ -28,25 +28,23 @@ class Post {
     this.author_name = data.author_name;
   }
 
-  static get() {
-    const query = 'SELECT n.id, n.title, n.content, n.created_at, n.modified_at, \
-      n.created_by, n.modified_by, m.first_name || \' \' || m.surname as author_name \
+  static get(userId) {
+    const query = 'SELECT n.id, n.title, n.content, n.md_content, n.created_at, n.modified_at, \
+      n.created_by, n.modified_by, m.first_name || \' \' || m.surname AS author_name \
+      , (SELECT Count(*) FROM likes WHERE likes.post_id = n.id) AS like_count \
+      , (SELECT Count(*) FROM likes WHERE likes.post_id = n.id AND likes.member_id = $1) AS user_liked\
       FROM News n INNER JOIN Members m ON n.created_by = m.id \
       ORDER BY created_at DESC';
 
-    return db.any(query);
+    return db.any(query, userId).then(posts => {
+      posts.map((row, i) => {
+        row.created_at_relative = moment(row.created_at).fromNow();
+        row.user_liked = row.user_liked == '1';
+      });
 
-    // const query = 'SELECT author_id, creation_timestamp, title, content, md_content FROM News ORDER BY creation_timestamp DESC';
-    //
-    // return db.any(query).then(posts => {
-    //   return Promise.all(posts.map((row, i) => {
-    //     return User.getById(row.author_id).then(user => {
-    //       row.creation_time = moment(row.creation_timestamp).fromNow();
-    //       row.author = user.name; // May be null if User.getById rejects.
-    //       return row;
-    //     });
-    //   }));
-    // });
+      console.log(posts);
+      return posts;
+    });
   }
 
   static add(post) {
@@ -64,6 +62,28 @@ class Post {
   static delete(id) {
     const query = 'DELETE FROM News WHERE id = $1';
     return db.none(query, [id]);
+  }
+
+  static like(postId, userId) {
+    let query = 'SELECT * FROM Likes WHERE post_id = $1 AND member_id = $2';
+    return db.oneOrNone(query, [postId, userId]).then(data => {
+      if (data) { // Row exists.
+        query = 'DELETE FROM Likes WHERE post_id = $1 AND member_id = $2; \
+        SELECT count(post_id) FROM Likes WHERE post_id = $1';
+        return db.one(query, [postId, userId]).then(data => {
+          data.like_status = 'unliked';
+          return data;
+        });
+      } else {
+        query = 'INSERT INTO Likes (post_id, member_id) VALUES ($1, $2); \
+        SELECT count(post_id) FROM Likes WHERE post_id = $1';
+        return db.one(query, [postId, userId]).then(data => {
+          data.like_status = 'liked';
+          return data;
+        });
+      }
+    });
+
   }
 }
 
