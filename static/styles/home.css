@@ -28,8 +28,10 @@
 }
 
 #formatting-help-button {
+  color: black;
   display: inline-block;
   vertical-align: bottom;
+  text-decoration: underline;
   margin-left: 0.5em;
 }
 
@@ -96,12 +98,18 @@
 
 .news-item-actions li {
   display: inline-block;
-  margin-right: 1em;
-  text-decoration: underline;
+  margin-right: 0.5em;
+}
+
+.news-item-actions a {
+  color: black;
+  text-decoration: none;
+  padding: 8px 15px;
+  background-color: white;
 }
 
 .news-item-actions a:hover {
-  text-decoration: none;
+  text-decoration: underline;
 }
 
 .latest-news #latest-news-header {
@@ -113,4 +121,12 @@ blockquote {
   padding: 0 1em;
   color: #6a737d;
   border-left: 0.25em solid #dfe2e5
+}
+
+.news-item-actions .fa {
+  margin-right: 0.5em;
+}
+
+.action-like-liked i {
+  color: red;
 }

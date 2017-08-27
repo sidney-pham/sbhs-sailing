@@ -61,6 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }).then(() => {
         // Clear form.
         newPostForm.reset();
+        content.style.height = '100px';
         title.focus().blur(); // Safari 10.0 bug.
       }).catch(err => {
         console.log(err);
@@ -120,12 +121,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 class Post {
   constructor(data) {
-    this.author = data.author;
     this.title = data.title;
-    this.date = data.creation_time;
-    this.fullDate = data.creation_timestamp;
     this.content = data.content;
     this.mdContent = data.md_content;
+    this.created_at = data.created_at;
+    this.created_by = data.created_by;
+    this.author_name = data.author_name;
   }
 
   displayPost() {
@@ -134,16 +135,16 @@ class Post {
 
     const author = document.createElement('h3');
     author.classList.add('news-item-author');
-    author.textContent = this.author || 'No Name'; // this.author may be null.
+    author.textContent = this.author_name || 'No Name'; // this.author may be null.
 
     const title = document.createElement('h3');
     title.classList.add('news-item-title');
     title.textContent = this.title;
 
     const date = document.createElement('time');
-    const fullDate = new Date(this.fullDate);
-    date.setAttribute('title', fullDate.toUTCString());
-    date.setAttribute('datetime', fullDate.toISOString());
+    const createdAt = new Date(this.created_at);
+    date.setAttribute('title', createdAt.toUTCString());
+    date.setAttribute('datetime', createdAt.toISOString());
     date.textContent = this.date;
 
     const dateContainer = document.createElement('h4');
@@ -168,26 +169,64 @@ class Post {
     const likeLi = document.createElement('li');
     const editLi = document.createElement('li');
     const deleteLi = document.createElement('li');
+    const replyLi = document.createElement('li');
     const likeA = document.createElement('a');
     likeA.classList.add('action-like');
-    likeA.setAttribute('href', 'javascript: void 0;');
-    likeA.textContent = 'Like';
+    likeA.href= 'javascript: void 0;';
+    likeA.setAttribute('title', 'Like');
+    const likeButton = document.createElement('i');
+    likeButton.classList.add('fa');
+    likeButton.classList.add('fa-heart-o');
+    likeButton.setAttribute('aria-hidden', 'true');
+    likeA.appendChild(likeButton);
+    const likeText = document.createTextNode('Like');
+    likeA.appendChild(likeText);
+
     const editA = document.createElement('a');
     editA.classList.add('action-edit');
-    editA.setAttribute('href', 'javascript: void 0;');
-    editA.textContent = 'Edit';
+    editA.href = 'javascript: void 0;';
+    editA.setAttribute('title', 'Edit');
+    const editButton = document.createElement('i');
+    editButton.classList.add('fa');
+    editButton.classList.add('fa-pencil');
+    editButton.setAttribute('aria-hidden', 'true');
+    editA.appendChild(editButton);
+    const editText = document.createTextNode('Edit');
+    editA.appendChild(editText);
+
     const deleteA = document.createElement('a');
     deleteA.classList.add('action-delete');
-    deleteA.setAttribute('href', 'javascript: void 0;');
-    deleteA.textContent = 'Delete';
+    deleteA.href = 'javascript: void 0;';
+    deleteA.setAttribute('title', 'Delete');
+    const deleteButton = document.createElement('i');
+    deleteButton.classList.add('fa');
+    deleteButton.classList.add('fa-trash');
+    deleteButton.setAttribute('aria-hidden', 'true');
+    deleteA.appendChild(deleteButton);
+    const deleteText = document.createTextNode('Delete');
+    deleteA.appendChild(deleteText);
+
+    const replyA = document.createElement('a');
+    replyA.classList.add('action-reply');
+    replyA.href = 'javascript: void 0;';
+    replyA.setAttribute('title', 'Reply');
+    const replyButton = document.createElement('i');
+    replyButton.classList.add('fa');
+    replyButton.classList.add('fa-reply');
+    replyButton.setAttribute('aria-hidden', 'true');
+    replyA.appendChild(replyButton);
+    const replyText = document.createTextNode('Reply');
+    replyA.appendChild(replyText);
 
     likeLi.appendChild(likeA);
     editLi.appendChild(editA);
     deleteLi.appendChild(deleteA);
+    replyLi.appendChild(replyA);
 
     actionsUl.appendChild(likeLi);
     actionsUl.appendChild(editLi);
     actionsUl.appendChild(deleteLi);
+    actionsUl.appendChild(replyLi);
 
     actionsContainer.appendChild(actionsUl);
 
@@ -199,6 +238,14 @@ class Post {
 
     const latestNews = document.querySelector('.latest-news');
     latestNews.appendChild(newsItem);
+
+    // Event handlers for each post.
+    likeA.addEventListener('click', event => {
+      likeButton.classList.remove('fa-heart-o');
+      likeButton.classList.add('fa-heart');
+      likeText.textContent = 'Liked';
+      likeA.classList.add('action-like-liked');
+    });
   }
 
   static getNews() {
@@ -208,6 +255,7 @@ class Post {
       // Get JSON data from Response object.
       return res.json();
     }).then(posts => {
+      console.log(posts);
       // posts: array of data objects sorted new->old.
       // Clear all posts.
       const latestNews = document.querySelector('.latest-news');
@@ -256,9 +304,11 @@ class Post {
         return Post.getNews();
       } else {
         // Display post error. TODO
-        alert('Fail:', data.message);
+        alert('Could not post. Please try again. Error:', data.message);
         throw new Error(data.message);
       }
+    }).catch(err => {
+      console.log(err);
     });
   }
 }
