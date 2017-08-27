@@ -56,6 +56,16 @@
   font-weight: lighter;
 }
 
+.news-item-actions ul {
+  list-style-type: none;
+  margin: 10px 0 0;
+  padding: 0;
+}
+
+.news-item-actions li {
+  display: inline-block;
+}
+
 .latest-news #latest-news-header {
   margin: 30px 0 20px;
 }

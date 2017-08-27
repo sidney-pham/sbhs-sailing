@@ -149,7 +149,7 @@ class Post {
   }
 
   static getNews() {
-    return fetch('/news').then(res => {
+    return fetch('/api/news').then(res => {
       // Get JSON data from Response object.
       return res.json();
     }).then(posts => {
@@ -186,7 +186,7 @@ class Post {
   }
 
   static postNews(data) {
-    return fetch('/news', {
+    return fetch('/api/news', {
       method: 'POST',
       headers: new Headers({'Content-Type': 'application/json'}),
       body: JSON.stringify(data)

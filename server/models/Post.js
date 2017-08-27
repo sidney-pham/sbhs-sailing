@@ -32,6 +32,12 @@ class Post {
     ($1, CURRENT_TIMESTAMP, $2, $3)';
     return db.none(query, [post.id, post.title, post.content]);
   }
+
+  static editPost(id, newPost) { // TODO
+    const query = 'INSERT INTO News (author_id, creation_timestamp, title, content) VALUES \
+    ($1, CURRENT_TIMESTAMP, $2, $3)';
+    return db.none(query, [post.id, post.title, post.content]);
+  }
 }
 
 module.exports = Post;
