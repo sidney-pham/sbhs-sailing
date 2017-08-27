@@ -17,6 +17,7 @@
     "compression": "^1.6.2",
     "express": "^4.15.2",
     "express-session": "^1.15.4",
+    "marked": "^0.3.6",
     "moment": "^2.18.1",
     "nunjucks": "^3.0.1",
     "pg": "^6.4.2",

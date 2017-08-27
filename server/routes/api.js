@@ -57,18 +57,37 @@ router.post('/news', checkAuth, (req, res) => {
 
 router.put('/news/:post_id', (req, res) => {
   const post_id = req.params.post_id;
-  console.log(post_id);
+  const {title, content} = req.body;
+  console.log(req.body);
+  console.log(title, content);
 
-
-
-  res.json({
-    'success': true,
-    'message': `News item ${post_id} updated.`
+  Post.editPost(post_id, {id: 1, title, content}).then(newPost => {
+    res.json(Object.assign({
+      'success': true,
+      'message': `News item ${post_id} updated.`
+    }, newPost));
+  }).catch(err => {
+    res.json({
+      'success': false,
+      'message': err.message
+    });
   });
 });
 
-router.delete('/news/:post_id', checkAuth, (req, res) => {
+router.delete('/news/:post_id', (req, res) => {
+  const post_id = req.params.post_id;
 
+  Post.deletePost(post_id).then(() => {
+    res.json({
+      'success': true,
+      'message': `News item ${post_id} deleted.`
+    });
+  }).catch(err => {
+    res.json({
+      'success': false,
+      'message': err.message
+    });
+  });
 });
 
 module.exports = router;

@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const newPostForm = document.querySelector('.new-post form');
   const title = document.querySelector('#new-post-title');
   const content = document.querySelector('#new-post-content');
+  const helpButton = document.querySelector('#formatting-help-button');
+  const help = document.querySelector('#formatting-help');
   const loginError = document.querySelector('.error-list');
 
   // Load news.
@@ -14,6 +16,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // No idea how this works, but it fixes a quirk of scrollHeight when deleting lines.
     event.target.style.height = 'auto';
     event.target.style.height = (event.target.scrollHeight > 100 ? event.target.scrollHeight : 100) + 'px';
+  });
+
+  // Handle formatting help button.
+  let helpCounter = 0;
+  helpButton.addEventListener('click', event => {
+    helpCounter++;
+    const showHelp = helpCounter % 2 == 1;
+    helpButton.textContent = showHelp ? 'Hide Help' : 'Formatting Help';
+    if (showHelp) {
+      help.style.display = 'block';
+    } else {
+      help.style.display = 'none';
+    }
   });
 
   // Handle submit of new post.
@@ -44,12 +59,15 @@ document.addEventListener('DOMContentLoaded', () => {
         title: title.value,
         content: content.value
       }).then(() => {
-        submitButton.textContent = 'Submit';
-        submitButton.style.width = '';
-
         // Clear form.
         newPostForm.reset();
         title.focus().blur(); // Safari 10.0 bug.
+      }).catch(err => {
+        console.log(err);
+      }).then(() => {
+        // Always reset submit button.
+        submitButton.textContent = 'Submit';
+        submitButton.style.width = '';
       });
     }
   });
@@ -107,6 +125,7 @@ class Post {
     this.date = data.creation_time;
     this.fullDate = data.creation_timestamp;
     this.content = data.content;
+    this.mdContent = data.md_content;
   }
 
   displayPost() {
@@ -134,22 +153,58 @@ class Post {
     const contentContainer = document.createElement('div');
     contentContainer.classList.add('news-item-content');
 
-    const content = document.createElement('p');
-    content.textContent = this.content;
+    if (this.mdContent) {
+      contentContainer.innerHTML = this.mdContent;
+    } else {
+      const content = document.createElement('p');
+      content.textContent = this.content;
+      contentContainer.appendChild(content);
+    }
 
-    contentContainer.appendChild(content);
+    const actionsContainer = document.createElement('div');
+    actionsContainer.classList.add('news-item-actions');
+
+    const actionsUl = document.createElement('ul');
+    const likeLi = document.createElement('li');
+    const editLi = document.createElement('li');
+    const deleteLi = document.createElement('li');
+    const likeA = document.createElement('a');
+    likeA.classList.add('action-like');
+    likeA.setAttribute('href', 'javascript: void 0;');
+    likeA.textContent = 'Like';
+    const editA = document.createElement('a');
+    editA.classList.add('action-edit');
+    editA.setAttribute('href', 'javascript: void 0;');
+    editA.textContent = 'Edit';
+    const deleteA = document.createElement('a');
+    deleteA.classList.add('action-delete');
+    deleteA.setAttribute('href', 'javascript: void 0;');
+    deleteA.textContent = 'Delete';
+
+    likeLi.appendChild(likeA);
+    editLi.appendChild(editA);
+    deleteLi.appendChild(deleteA);
+
+    actionsUl.appendChild(likeLi);
+    actionsUl.appendChild(editLi);
+    actionsUl.appendChild(deleteLi);
+
+    actionsContainer.appendChild(actionsUl);
 
     newsItem.appendChild(author);
     newsItem.appendChild(title);
     newsItem.appendChild(dateContainer);
     newsItem.appendChild(contentContainer);
+    newsItem.appendChild(actionsContainer);
 
     const latestNews = document.querySelector('.latest-news');
     latestNews.appendChild(newsItem);
   }
 
   static getNews() {
-    return fetch('/api/news').then(res => {
+    return fetch('/api/news', {
+      credentials: 'include'
+    }).then(res => {
       // Get JSON data from Response object.
       return res.json();
     }).then(posts => {
@@ -188,6 +243,7 @@ class Post {
   static postNews(data) {
     return fetch('/api/news', {
       method: 'POST',
+      credentials: 'include',
       headers: new Headers({'Content-Type': 'application/json'}),
       body: JSON.stringify(data)
     }).then(res => {
@@ -203,8 +259,6 @@ class Post {
         alert('Fail:', data.message);
         throw new Error(data.message);
       }
-    }).catch(data => {
-      console.log(data);
     });
   }
 }

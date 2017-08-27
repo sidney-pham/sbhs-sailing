@@ -43,6 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       fetch('/login', {
         method: 'POST',
+        credentials: 'include',
         headers: new Headers({'Content-Type': 'application/json'}),
         body: JSON.stringify({email: email.value, password: password.value})
       }).then(res => {
