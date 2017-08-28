@@ -30,9 +30,9 @@ class Post {
 
   static get(userId) {
     const query = 'SELECT n.id, n.title, n.content, n.md_content, n.created_at, n.modified_at, \
-      n.created_by, n.modified_by, m.first_name || \' \' || m.surname AS author_name \
-      , (SELECT Count(*) FROM likes WHERE likes.post_id = n.id) AS like_count \
-      , (SELECT Count(*) FROM likes WHERE likes.post_id = n.id AND likes.member_id = $1) AS user_liked\
+      n.created_by, n.modified_by, m.first_name || \' \' || m.surname AS author_name, \
+      (SELECT Count(*) FROM Likes WHERE Likes.post_id = n.id) AS like_count, \
+      (SELECT Count(*) FROM Likes WHERE Likes.post_id = n.id AND Likes.member_id = $1) AS user_liked \
       FROM News n INNER JOIN Members m ON n.created_by = m.id \
       ORDER BY created_at DESC';
 
@@ -40,9 +40,10 @@ class Post {
       posts.map((row, i) => {
         row.created_at_relative = moment(row.created_at).fromNow();
         row.user_liked = row.user_liked == '1';
+        row.user_is_author = row.created_by == userId;
       });
 
-      console.log(posts);
+      // console.log(posts);
       return posts;
     });
   }
@@ -59,9 +60,14 @@ class Post {
     return db.one(query, [newPost.title, newPost.content, marked(newPost.content), newPost.edited_by, id]);
   }
 
-  static delete(id) {
-    const query = 'DELETE FROM News WHERE id = $1';
-    return db.none(query, [id]);
+  static delete(postId, userId) {
+    // Check the author. Then delete, else throw an error.
+    const query = 'DELETE FROM News WHERE id = $1 AND created_by = $2 RETURNING *';
+    return db.oneOrNone(query, [postId, userId]).then(data => {
+      if (data === null) { // Author doesn't match.
+        throw new Error('User doesn\'t have the right permissions.');
+      }
+    });
   }
 
   static like(postId, userId) {

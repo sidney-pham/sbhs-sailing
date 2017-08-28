@@ -77,7 +77,7 @@ router.put('/news/:post_id', (req, res) => {
   console.log(req.body);
   console.log(title, content);
 
-  Post.edit(post_id, {edited_by: 1, title, content}).then(newPost => { // TODO: 1.
+  Post.edit(post_id, {edited_by: req.user.id, title, content}).then(newPost => {
     res.json(Object.assign({
       'success': true,
       'message': `News item ${post_id} updated.`
@@ -92,8 +92,9 @@ router.put('/news/:post_id', (req, res) => {
 
 router.delete('/news/:post_id', (req, res) => { // TODO: auth.
   const post_id = req.params.post_id;
+  const user_id = req.user.id;
 
-  Post.delete(post_id).then(() => {
+  Post.delete(post_id, user_id).then(() => {
     res.json({
       'success': true,
       'message': `News item ${post_id} deleted.`
@@ -122,6 +123,6 @@ router.get('/news/like/:post_id', (req, res) => {
       'message': err.message
     });
   });
-})
+});
 
 module.exports = router;

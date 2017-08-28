@@ -8,15 +8,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const loginError = document.querySelector('.error-list');
 
   // Load news.
-  Post.getNews();
+  Post.get();
 
   // Handle height of Content textbox.
-  content.addEventListener('input', event => {
-    // https://stackoverflow.com/questions/454202/creating-a-textarea-with-auto-resize/
-    // No idea how this works, but it fixes a quirk of scrollHeight when deleting lines.
-    event.target.style.height = 'auto';
-    event.target.style.height = (event.target.scrollHeight > 100 ? event.target.scrollHeight : 100) + 'px';
-  });
+  content.addEventListener('input', autoResizeTextbox);
 
   // Handle formatting help button.
   let helpCounter = 0;
@@ -35,16 +30,17 @@ document.addEventListener('DOMContentLoaded', () => {
   newPostForm.addEventListener('submit', event => {
     event.preventDefault();
 
-    clearError();
+    clearError(loginError);
+    content.style.marginBottom = '10px'; // Restore normal margin.
 
     let invalid = false;
     if (!title.checkValidity()) {
-      showError(title, getErrorMsg('title', title.validity));
+      showError(loginError, title, getErrorMsg('title', title.validity));
       invalid = true;
     }
 
     if (!content.checkValidity()) {
-      showError(content, getErrorMsg('content', content.validity));
+      showError(loginError, content, getErrorMsg('content', content.validity));
       invalid = true;
     }
 
@@ -54,71 +50,31 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       submitButton.textContent = 'Submitting...';
       submitButton.style.width = 'auto';
+      submitButton.disabled = true;
 
-      Post.postNews({
+      Post.post({
         title: title.value,
         content: content.value
       }).then(() => {
         // Clear form.
         newPostForm.reset();
-        content.style.height = '100px';
-        title.focus().blur(); // Safari 10.0 bug.
+        content.style.height = '40px';
+        title.focus();
+        title.blur(); // Safari 10.0 bug.
       }).catch(err => {
         console.log(err);
+        alert('Could not post. Error:', err.message);
       }).then(() => {
         // Always reset submit button.
         submitButton.textContent = 'Submit';
         submitButton.style.width = '';
+        submitButton.disabled = false;
       });
     }
   });
-
-  // Form validation helpers.
-  // These functions are in the event handler because they use elements from the DOM.
-  function showError(element, text) {
-    const item = document.createElement('li');
-    item.textContent = text;
-    loginError.appendChild(item);
-
-    element.classList.add('invalid');
-  }
-
-  function clearError() {
-    content.style.marginBottom = '10px'; // Restore normal margin.
-    while (loginError.firstChild) {
-      loginError.removeChild(loginError.firstChild);
-    }
-  }
-
-  function getErrorMsg(name, validity) {
-    let message;
-    switch (true) {
-      case validity.valueMissing:
-        message = `${name} cannot be empty.`;
-        break;
-      case validity.tooLong:
-        message = `${name} too long.`;
-        break;
-      case validity.rangeOverflow:
-        message = `${name} too big.`;
-        break;
-      case validity.rangeUnderflow:
-        message = `${name} too small.`;
-        break;
-      default:
-        message = `Invalid ${name}.`;
-
-      return message;
-    }
-
-    return sentenceCase(message);
-  }
-
-  function sentenceCase(text) {
-    return text[0].toUpperCase() + (text.slice(1)).toLowerCase();
-  }
 });
 
+// Useful methods to deal with Posts.
 class Post {
   constructor(data) {
     this.id = data.id;
@@ -131,11 +87,16 @@ class Post {
     this.created_at_relative = data.created_at_relative;
     this.created_by = data.created_by;
     this.author_name = data.author_name;
+    this.user_is_author = data.user_is_author;
   }
 
+  // Render each post.
   display() {
     const newsItem = document.createElement('article');
     newsItem.classList.add('news-item');
+
+    const topBar = document.createElement('div');
+    topBar.classList.add('news-item-top-bar');
 
     const author = document.createElement('h3');
     author.classList.add('news-item-author');
@@ -144,6 +105,9 @@ class Post {
     const title = document.createElement('h3');
     title.classList.add('news-item-title');
     title.textContent = this.title;
+
+    topBar.appendChild(author);
+    topBar.appendChild(title);
 
     const likes = document.createElement('div');
     likes.classList.add('news-item-likes');
@@ -164,6 +128,7 @@ class Post {
     const contentContainer = document.createElement('div');
     contentContainer.classList.add('news-item-content');
 
+    // Default to displaying regular content if no markdown version exists.
     if (this.mdContent) {
       contentContainer.innerHTML = this.mdContent;
     } else {
@@ -172,17 +137,24 @@ class Post {
       contentContainer.appendChild(content);
     }
 
+    const errorList = document.createElement('ul');
+    errorList.classList.add('error-list');
+
     const actionsContainer = document.createElement('div');
     actionsContainer.classList.add('news-item-actions');
 
     const actionsUl = document.createElement('ul');
     const likeLi = document.createElement('li');
+    const saveLi = document.createElement('li');
+    saveLi.style.display = 'none';
     const editLi = document.createElement('li');
     const deleteLi = document.createElement('li');
-    const replyLi = document.createElement('li');
+    // const replyLi = document.createElement('li');
+
+    // Like button.
     const likeA = document.createElement('a');
     likeA.classList.add('action-like');
-    likeA.href= 'javascript: void 0;';
+    likeA.href = 'javascript: void 0;';
     likeA.setAttribute('title', 'Like');
     const likeButton = document.createElement('i');
     const likeText = document.createTextNode('Like');
@@ -200,6 +172,20 @@ class Post {
     likeA.appendChild(likeButton);
     likeA.appendChild(likeText);
 
+    // Save button.
+    const saveA = document.createElement('a');
+    saveA.classList.add('action-save');
+    saveA.href = 'javascript: void 0;';
+    saveA.setAttribute('title', 'Save');
+    const saveButton = document.createElement('i');
+    saveButton.classList.add('fa');
+    saveButton.classList.add('fa-save');
+    saveButton.setAttribute('aria-hidden', 'true');
+    saveA.appendChild(saveButton);
+    const saveText = document.createTextNode('Save');
+    saveA.appendChild(saveText);
+
+    // Edit button.
     const editA = document.createElement('a');
     editA.classList.add('action-edit');
     editA.href = 'javascript: void 0;';
@@ -212,6 +198,7 @@ class Post {
     const editText = document.createTextNode('Edit');
     editA.appendChild(editText);
 
+    // Delete button.
     const deleteA = document.createElement('a');
     deleteA.classList.add('action-delete');
     deleteA.href = 'javascript: void 0;';
@@ -224,34 +211,40 @@ class Post {
     const deleteText = document.createTextNode('Delete');
     deleteA.appendChild(deleteText);
 
-    const replyA = document.createElement('a');
-    replyA.classList.add('action-reply');
-    replyA.href = 'javascript: void 0;';
-    replyA.setAttribute('title', 'Reply');
-    const replyButton = document.createElement('i');
-    replyButton.classList.add('fa');
-    replyButton.classList.add('fa-reply');
-    replyButton.setAttribute('aria-hidden', 'true');
-    replyA.appendChild(replyButton);
-    const replyText = document.createTextNode('Reply');
-    replyA.appendChild(replyText);
+    // Reply button.
+    // const replyA = document.createElement('a');
+    // replyA.classList.add('action-reply');
+    // replyA.href = 'javascript: void 0;';
+    // replyA.setAttribute('title', 'Reply');
+    // const replyButton = document.createElement('i');
+    // replyButton.classList.add('fa');
+    // replyButton.classList.add('fa-reply');
+    // replyButton.setAttribute('aria-hidden', 'true');
+    // replyA.appendChild(replyButton);
+    // const replyText = document.createTextNode('Reply');
+    // replyA.appendChild(replyText);
 
     likeLi.appendChild(likeA);
+    saveLi.appendChild(saveA);
     editLi.appendChild(editA);
     deleteLi.appendChild(deleteA);
-    replyLi.appendChild(replyA);
+    // replyLi.appendChild(replyA);
 
     actionsUl.appendChild(likeLi);
-    actionsUl.appendChild(editLi);
-    actionsUl.appendChild(deleteLi);
-    actionsUl.appendChild(replyLi);
+    // Make sure user owns the post.
+    if (this.user_is_author) {
+      actionsUl.appendChild(saveLi);
+      actionsUl.appendChild(editLi);
+      actionsUl.appendChild(deleteLi);
+    }
+    // actionsUl.appendChild(replyLi);
 
     actionsContainer.appendChild(actionsUl);
 
-    newsItem.appendChild(author);
-    newsItem.appendChild(title);
+    newsItem.appendChild(topBar);
     newsItem.appendChild(dateAndLikesContainer);
     newsItem.appendChild(contentContainer);
+    newsItem.appendChild(errorList);
     newsItem.appendChild(actionsContainer);
 
     const latestNews = document.querySelector('.latest-news');
@@ -261,21 +254,153 @@ class Post {
     likeA.addEventListener('click', event => {
       console.log(this.title);
       this.like().then(data => {
-        // Toggle like button.
-        if (data.like_status === 'liked') {
-          likeButton.classList.remove('fa-heart-o');
-          likeButton.classList.add('fa-heart');
-          likeText.textContent = 'Liked';
-          likeA.classList.add('action-like-liked');
-        } else { // 'unliked'
-          likeButton.classList.remove('fa-heart');
-          likeButton.classList.add('fa-heart-o');
-          likeText.textContent = 'Like';
-          likeA.classList.remove('action-like-liked');
+        if (data.success) {
+          // Toggle like button.
+          if (data.like_status === 'liked') {
+            likeButton.classList.remove('fa-heart-o');
+            likeButton.classList.add('fa-heart');
+            likeText.textContent = 'Liked';
+            likeA.classList.add('action-like-liked');
+          } else { // 'unliked'
+            likeButton.classList.remove('fa-heart');
+            likeButton.classList.add('fa-heart-o');
+            likeText.textContent = 'Like';
+            likeA.classList.remove('action-like-liked');
+          }
+          // Update like count.
+          this.likes = data.like_count;
+          likes.textContent = this.likes + (this.likes == 1 ? ' like' : ' likes');
+        } else {
+          console.error(data.message);
+          alert(data.message);
         }
-        // Update like count.
-        this.likes = data.like_count;
-        likes.textContent = this.likes + (this.likes == 1 ? ' like' : ' likes');
+      });
+    });
+
+    let textarea = null;
+    let input = null;
+    editA.addEventListener('click', event => {
+      editButton.classList.toggle('fa-pencil');
+      editButton.classList.toggle('fa-close');
+
+      if (textarea === null) { // Edit button pressed.
+        textarea = document.createElement('textarea');
+        textarea.classList.add('news-item-editing-content');
+        textarea.addEventListener('input', autoResizeTextbox);
+        input = document.createElement('input');
+        input.classList.add('news-item-title');
+        input.classList.add('news-item-editing-title');
+        input.maxLength = 100;
+        input.required = true;
+        input.value = this.title;
+        // title.contentEditable = true;
+        input.classList.add('news-item-editing-title');
+        editText.textContent = 'Cancel';
+        textarea.value = this.content;
+        contentContainer.parentNode.insertBefore(textarea, contentContainer);
+        contentContainer.style.display = 'none';
+        title.parentNode.insertBefore(input, title);
+        title.style.display = 'none';
+        author.style.display = 'none';
+
+        // textarea.scrollHeight requires the element to have been inserted into
+        // the DOM.
+        textarea.style.height = (textarea.scrollHeight > 100 ? textarea.scrollHeight : 100) + 'px';
+        saveLi.style.display = '';
+        textarea.focus();
+      } else { // Update content.
+        // title.contentEditable = false;
+        editText.textContent = 'Edit';
+        textarea.remove();
+        input.remove();
+        title.textContent = this.title;
+
+        // Display content.
+        while (contentContainer.firstChild) {
+          contentContainer.firstChild.remove();
+        }
+
+        if (this.mdContent) {
+          contentContainer.innerHTML = this.mdContent;
+        } else {
+          const content = document.createElement('p');
+          content.textContent = this.content;
+          contentContainer.appendChild(content);
+        }
+
+        contentContainer.style.display = '';
+        title.style.display = '';
+        author.style.display = '';
+        textarea = null;
+        saveLi.style.display = 'none';
+      }
+    });
+
+    saveA.addEventListener('click', event => {
+      clearError(errorList);
+
+      let invalid = false;
+      if (!input.checkValidity()) {
+        showError(errorList, input, getErrorMsg('title', input.validity));
+        invalid = true;
+      }
+
+      if (!textarea.checkValidity()) {
+        showError(errorList, textarea, getErrorMsg('content', textarea.validity));
+        invalid = true;
+      }
+
+      if (invalid) {
+        event.preventDefault();
+        // content.style.marginBottom = '0'; // Make it look less jumpy.
+      } else {
+        saveText.textContent = 'Saving...';
+        saveA.style.width = 'auto';
+        // This should really be a button, but since it's not, emulate
+        // .disabled = true
+        let disableA = event => event.preventDefault();
+        saveA.addEventListener('click', disableA);
+
+        Post.put(this.id, {
+          title: input.value,
+          content: textarea.value
+        }).then(data => {
+          // Update data and render.
+          this.title = input.value;
+          this.content = textarea.value;
+          this.mdContent = data.md_content;
+          editA.click();
+        }).catch(err => {
+          console.error(err);
+          alert('Could not save.');
+        }).then(() => {
+          // Always reset save button.
+          saveText.textContent = 'Save';
+          saveA.style.width = '';
+          saveA.removeEventListener('click', disableA);
+        });
+      }
+    });
+
+    deleteA.addEventListener('click', event => {
+      if (!confirm('Are you sure?')) {
+        return;
+      }
+
+      fetch(`/api/news/${this.id}`, {
+        method: 'DELETE',
+        credentials: 'include'
+      }).then(res => {
+        // Get JSON data from Response object.
+        return res.json();
+      }).then(data => {
+        if (data.success) {
+          newsItem.remove();
+        } else {
+          alert(data.message);
+          // alert('You shouldn\'t have done that.');
+          // location.href = '//youtube.com/watch?v=dQw4w9WgXcQ';
+        }
       });
     });
   }
@@ -289,17 +414,16 @@ class Post {
     });
   }
 
-  static getNews() {
+  static get() {
     return fetch('/api/news', {
       credentials: 'include'
     }).then(res => {
       // Get JSON data from Response object.
       return res.json();
     }).then(posts => {
-      // posts: array of data objects sorted new->old.
-      console.log(posts);
       if (posts.success) {
-        posts = posts.data;
+        posts = posts.data; // posts: array of data objects sorted new->old.
+
         // Clear all posts.
         const latestNews = document.querySelector('.latest-news');
 
@@ -326,16 +450,16 @@ class Post {
           const post = new Post(postData);
           post.display();
         }
-      } else { // Some error.
+      } else {
         const latestNewsMessage = document.querySelector('.no-posts-message');
-        latestNewsMessage.textContent = 'Error:', data.message;
+        latestNewsMessage.textContent = 'Could not get posts:', data.message;
       }
     }).catch(err => {
       console.log(err);
     });
   }
 
-  static postNews(data) {
+  static post(data) {
     return fetch('/api/news', {
       method: 'POST',
       credentials: 'include',
@@ -348,14 +472,75 @@ class Post {
       console.log('success');
       if (data.success) {
         // Update news.
-        return Post.getNews();
+        return Post.get();
       } else {
-        // Display post error. TODO
-        alert('Could not post. Please try again. Error:', data.message);
         throw new Error(data.message);
       }
     }).catch(err => {
       console.log(err);
+      return err;
     });
   }
+
+  static put(id, data) {
+    return fetch(`/api/news/${id}`, {
+      method: 'PUT',
+      credentials: 'include',
+      headers: new Headers({'Content-Type': 'application/json'}),
+      body: JSON.stringify(data)
+    }).then(res => {
+      // Get JSON data from Response object.
+      return res.json();
+    });
+  }
+}
+
+function autoResizeTextbox(event) {
+  // https://stackoverflow.com/questions/454202/creating-a-textarea-with-auto-resize/
+  // No idea how this works, but it fixes a quirk of scrollHeight when deleting lines.
+  event.target.style.height = 'auto';
+  event.target.style.height = (event.target.scrollHeight > 100 ? event.target.scrollHeight : 100) + 'px';
+}
+
+// Form validation helpers.
+function clearError(loginError) {
+  while (loginError.firstChild) {
+    loginError.removeChild(loginError.firstChild);
+  }
+}
+
+function showError(loginError, element, text) {
+  const item = document.createElement('li');
+  item.textContent = text;
+  loginError.appendChild(item);
+
+  element.classList.add('invalid');
+}
+
+function getErrorMsg(name, validity) {
+  let message;
+  switch (true) {
+    case validity.valueMissing:
+      message = `${name} cannot be empty.`;
+      break;
+    case validity.tooLong:
+      message = `${name} too long.`;
+      break;
+    case validity.rangeOverflow:
+      message = `${name} too big.`;
+      break;
+    case validity.rangeUnderflow:
+      message = `${name} too small.`;
+      break;
+    default:
+      message = `Invalid ${name}.`;
+
+    return message;
+  }
+
+  return sentenceCase(message);
+}
+
+function sentenceCase(text) {
+  return text[0].toUpperCase() + (text.slice(1)).toLowerCase();
 }
