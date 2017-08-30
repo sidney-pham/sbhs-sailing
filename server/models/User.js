@@ -9,6 +9,7 @@ class User {
     this.email = data.email;
     this.phone = data.phone;
     this.username = data.username; // TODO: Remove?
+    this.password = data.password;
     this.student_id = data.student_id;
     this.is_disabled = data.is_disabled;
     this.first_login = data.first_login;

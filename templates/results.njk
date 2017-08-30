@@ -6,59 +6,12 @@
 {% endblock extra_head %}
 
 {% block content %}
-<section class="search-results">
-  <input class="results-search-box" type="text" placeholder="Search">
-</section>
 <section class="results">
-  <article class="result-item">
-    <div class="result-event-header">
-      <h3 class="result-event-name">Saturday Sport</h3>
-      <h3 class="result-event-date">Date: 07-01-2018 to 09-01-2018</h3>
-      <h3 class="result-event-location">Location: Woollahra Sailing Club</h3>
-    </div>
-    <table>
-      <thead>
-        <tr>
-          <th>Position</th>
-          <th>Skipper</th>
-          <th>Crew</th>
-          <th>Boat</th>
-          <th>Sail Number</th>
-          <th>Race 1</th>
-          <th>Race 2</th>
-          <th>Race 3</th>
-          <th>Drop(s)</th>
-          <th>Final Score</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>1</td>
-          <td>Dallas Yan</td>
-          <td>Jarrod Khaw</td>
-          <td>Lady Penrhyn</td>
-          <td>18</td>
-          <td>1</td>
-          <td>1</td>
-          <td>2</td>
-          <td>2</td>
-          <td>2</td>
-        </tr>
-        <tr>
-          <td>1</td>
-          <td>Patrick Han</td>
-          <td>Jack Vorgias</td>
-          <td>Sirius</td>
-          <td>11</td>
-          <td>2</td>
-          <td>2</td>
-          <td>1</td>
-          <td>2</td>
-          <td>3</td>
-        </tr>
-      </tbody>
-    </table>
-  </article>
+  <h2 id="results-header">Results (show past, future, sort)</h2>
+  <section class="search-results">
+    <input class="results-search-box" type="text" placeholder="Search">
+  </section>
+  <p class="results-message">Loading...</p>
   <article class="result-item">
     <div class="result-event-header">
       <h3 class="result-event-name">CHS Sailing</h3>
@@ -108,54 +61,41 @@
       </tbody>
     </table>
   </article>
-  <article class="result-item">
-    <div class="result-event-header">
-      <h3 class="result-event-name">Saturday Sport</h3>
-      <h3 class="result-event-date">Date: 07-01-2018 to 09-01-2018</h3>
-      <h3 class="result-event-location">Location: Woollahra Sailing Club</h3>
-    </div>
-    <table>
-      <thead>
-        <tr>
-          <th>Position</th>
+</section>
+{# <section class="rosters">
+  <section class="new-roster">
+    <form class="new-roster-form" novalidate>
+      <h3 id="new-roster-header">New Roster</h3>
+      <label class="new-roster-label" for="roster-event-name">Event Name</label>
+      <input type="text" class="new-roster-event-info" id="roster-event-name" placeholder="Required" required>
+      <label class="new-roster-label" for="roster-start-date">Start Date</label>
+      <input type="date" class="new-roster-event-info" id="roster-start-date" placeholder="Required  (yyyy-mm-dd)" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" required>
+      <label class="new-roster-label" for="roster-end-date">End Date</label>
+      <input type="date" class="new-roster-event-info" id="roster-end-date" placeholder="(yyyy-mm-dd)" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}">
+      <label class="new-roster-label" for="roster-location">Location</label>
+      <input type="text" class="new-roster-event-info" id="roster-location" placeholder="Required" required>
+      <label class="new-roster-label" for="roster-details">Details</label>
+      <textarea class="new-roster-event-info" id="roster-details" placeholder="" maxlength="10000"></textarea>
+      <table class="new-roster-table">
+        <h4 class="new-roster-boats-header">Boats</h2>
+        <thead>
           <th>Skipper</th>
           <th>Crew</th>
           <th>Boat</th>
           <th>Sail Number</th>
-          <th>Race 1</th>
-          <th>Race 2</th>
-          <th>Race 3</th>
-          <th>Drop(s)</th>
-          <th>Final Score</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>1</td>
-          <td>Dallas Yan</td>
-          <td>Jarrod Khaw</td>
-          <td>Lady Penrhyn</td>
-          <td>18</td>
-          <td>1</td>
-          <td>1</td>
-          <td>2</td>
-          <td>2</td>
-          <td>2</td>
-        </tr>
-        <tr>
-          <td>1</td>
-          <td>Patrick Han</td>
-          <td>Jack Vorgias</td>
-          <td>Sirius</td>
-          <td>11</td>
-          <td>2</td>
-          <td>2</td>
-          <td>1</td>
-          <td>2</td>
-          <td>3</td>
-        </tr>
-      </tbody>
-    </table>
-  </article>
-</section>
+        </thead>
+        <tbody>
+          <tr>
+            <td><input type="text" class="boat-skipper" placeholder="Required" id="boat-skipper" required></td>
+            <td><input type="text" class="boat-crew" placeholder="Required" id="boat-crew" required></td>
+            <td><input type="text" class="boat-boat" placeholder="Required" id="boat-boat" required></td>
+            <td><input type="text" class="boat-sail-number" placeholder="Required" id="boat-sail-number" required></td>
+          </tr>
+        </tbody>
+      </table>
+      <ul class="error-list"></ul>
+      <button type="submit" class="trim-button submit-button" id="submit-new-roster-button">Submit</button>
+    </form>
+  </section>
+</section> #}
 {% endblock content %}

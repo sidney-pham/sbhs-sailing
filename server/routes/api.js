@@ -1,6 +1,7 @@
 const express = require('express');
 const Post = require('../models/Post');
 const User = require('../models/User');
+const Roster = require('../models/Roster');
 
 const router = express.Router();
 
@@ -41,7 +42,6 @@ function checkAuth(req, res, next) {
 router.use(checkAuth);
 
 router.get('/news', (req, res) => {
-  const params = req.query;
   Post.get(req.user.id).then(posts => {
     res.json({
       'success': true,
@@ -124,5 +124,36 @@ router.get('/news/like/:post_id', (req, res) => {
     });
   });
 });
+
+router.get('/rosters', (req, res) => {
+  Roster.get().then(roster => {
+    console.log('GET /rosters', roster);
+    res.json({
+      'success': true,
+      'data': roster
+    });
+  }).catch(err => {
+    console.log(err);
+    res.status(500).json({
+      'success': false,
+      'message': err.message
+    });
+  });
+});
+
+router.post('/rosters', (req, res) => {
+  const {name, start_date, end_date, location, details, boats} = req.body;
+
+  Roster.add({name, start_date, end_date, location, details, boats}).then(() => {
+    res.json({
+      'success': true
+    });
+  }).catch(err => {
+    res.json({
+      'success': false,
+      'message': err.message
+    });
+  });
+})
 
 module.exports = router;

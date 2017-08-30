@@ -78,7 +78,9 @@
 .news-item-title {
   order: 1;
   font-size: 23px;
-  overflow-wrap: break-word;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .news-item-author {

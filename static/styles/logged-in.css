@@ -55,6 +55,64 @@ header nav {
 }
 
 /* -------------------------------------------------------------------------- */
+/* Dropdown */
+/* -------------------------------------------------------------------------- */
+
+.dropdown {
+  position: relative;
+  margin-left: auto;
+}
+
+.dropdown-menu {
+  font-size: 0.9em;
+  display: none;
+  background-color: #194f73;
+  flex-direction: column;
+  position: absolute;
+  top: calc(100% + 16px);
+  right: 0;
+  width: 150px;
+  color: white;
+  z-index: 100;
+  padding: 8px 0;
+  /*border-radius: 3px;*/
+}
+
+/*.dropdown-menu::before {
+  content: " ";
+  width: 0;
+  height: 0;
+  left: 64px;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid #FFFFFF;
+  position: absolute;
+  top: -8px;
+  z-index: 1000;
+}*/
+
+.dropdown-button:focus + .dropdown-menu {
+  display: flex;
+}
+
+.dropdown-button:focus {
+  pointer-events: none;
+  outline: 0;
+}
+
+.dropdown-menu:hover {
+  display: flex;
+}
+
+.dropdown-menu a {
+  padding: 8px 16px;
+}
+
+.dropdown-menu a:hover {
+  background-color: rgba(0,0,0,0.1);
+}
+
+/* -------------------------------------------------------------------------- */
 /* Main Content */
 /* -------------------------------------------------------------------------- */
 main {

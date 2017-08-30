@@ -273,6 +273,7 @@ class Post {
         } else {
           console.error(data.message);
           alert(data.message);
+          location.reload();
         }
       });
     });
@@ -476,9 +477,6 @@ class Post {
       } else {
         throw new Error(data.message);
       }
-    }).catch(err => {
-      console.log(err);
-      return err;
     });
   }
 

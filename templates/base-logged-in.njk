@@ -2,6 +2,7 @@
 
 {% block extra_head_base %}
 <link rel="stylesheet" href="/styles/logged-in.css">
+<script src="/scripts/fetch.min.js"></script>
 {% endblock %}
 
 {% block header %}
@@ -23,12 +24,15 @@
       <li class="{{ 'active' if state == 'results' }}">
         <a href="/results"><i class="fa fa-newspaper-o" aria-hidden="true"></i>RESULTS</a>
       </li>
-      <li class="user-profile">
-        <a href="/logout"><i class="fa fa-user" aria-hidden="true"></i>{{ user.name }}<i class="fa fa-caret-down" aria-hidden="true"></i></a>
+      <div class="dropdown">
+        <li class="user-profile dropdown-button" onclick="this.focus()" tabindex="-1">
+          <a href="#"><i class="fa fa-user" aria-hidden="true"></i>{{ user.name }}<i class="fa fa-caret-down" aria-hidden="true"></i></a>
+        </li>
         <ul class="dropdown-menu">
-          {# <li><a href="#"></a></li> #}
+          <a href="/settings"><i class="fa fa-cog" aria-hidden="true"></i>Settings</a>
+          <a href="/logout"><i class="fa fa-sign-out" aria-hidden="true"></i>Logout</a>
         </ul>
-      </li>
+      </div>
     </ul>
   </nav>
 </header>

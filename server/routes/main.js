@@ -63,6 +63,31 @@ router.get('/rosters', checkAuth, (req, res) => {
   res.render('rosters');
 });
 
+router.get('/settings', checkAuth, (req, res) => {
+  res.render('settings', {
+    user: req.user
+  });
+});
+
+router.post('/settings', checkAuth, (req, res) => {
+  const {first_name, surname, email, phone, password, student_id} = req.body;
+
+  req.user.update({
+    first_name,
+    surname,
+    email,
+    phone,
+    password,
+    student_id,
+    first_login: false
+  }).then(() => {
+    // Redirect on submit because users can modify settings later anyway.
+    res.redirect('/');
+  }).catch(() => {
+    res.render('settings');
+  });
+});
+
 router.get('/start', checkAuth, (req, res) => {
   // Make sure user isn't already initialised.
   if (!req.user.first_login && req.user.first_name && req.user.surname) {

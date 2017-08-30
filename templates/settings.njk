@@ -1,0 +1,27 @@
+{% extends 'base-logged-in.njk' %}
+
+{% block title %}Settings{% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="/styles/start.css">
+<script src="/scripts/settings.js"></script>
+{% endblock extra_head %}
+
+{% block content %}
+<form id="start-form" action="/settings" method="post" novalidate>
+  <h2>Settings</h2>
+  <label for="first-name">First Name</label>
+  <input type="text" name="first_name" id="first-name" placeholder="Required" value="{{ user.first_name }}" maxlength="30" required>
+  <label for="surname">Surname</label>
+  <input type="text" name="surname" id="surname" placeholder="Required" value="{{ user.surname }}" maxlength="30" required>
+  <label for="email">Email</label>
+  <input type="email" name="email" id="email" placeholder="" value="{{ user.email }}">
+  <label for="password">Password</label>
+  <input type="password" name="password" id="password" placeholder="" value="{{ user.password }}" maxlength="30">
+  <label for="student_id">Student ID</label>
+  <input type="text" name="student_id" id="student_id" placeholder="" value="{{ user.student_id }}" maxlength="30">
+  <label for="phone">Phone</label>
+  <input type="tel" name="phone" id="phone" placeholder="" value="{{ user.phone }}">
+  <ul class="error-list"></ul>
+  <button type="submit" class="trim-button submit-button">Submit</button>
+</form>
+{% endblock %}

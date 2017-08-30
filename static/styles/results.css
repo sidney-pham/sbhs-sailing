@@ -1,6 +1,11 @@
 /* -------------------------------------------------------------------------- */
 /* Result Item */
 /* -------------------------------------------------------------------------- */
+#results-header {
+  display: inline-block;
+  margin: 0 0 20px;
+}
+
 .result-event-name, .result-event-date, .result-event-location {
   margin: 0;
 }
@@ -19,7 +24,13 @@
 }
 
 .result-item {
-  margin-bottom: 50px;
+  margin-bottom: 20px;
+  background-color: aliceblue;
+  padding: 20px;
+}
+
+.result-item table {
+  margin: 0;
 }
 
 /* -------------------------------------------------------------------------- */
