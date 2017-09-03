@@ -9,7 +9,7 @@
 <header>
   <div class="banner">
     <a href="/">
-      <img src="images/sbhs_crest.png" alt="SBHS Crest" id="sbhs-crest">
+      <img src="/images/sbhs_crest.png" alt="SBHS Crest" id="sbhs-crest">
     </a>
     <h1 id="title">SBHS Sailing Portal</h1>
   </div>
@@ -29,6 +29,10 @@
           <a href="#"><i class="fa fa-user" aria-hidden="true"></i>{{ user.name }}<i class="fa fa-caret-down" aria-hidden="true"></i></a>
         </li>
         <ul class="dropdown-menu">
+          {% if user.user_level == 'admin' %}
+          <a href="/dump"><i class="fa fa-clipboard" aria-hidden="true"></i>Data Entry</a>
+          <a href="/manage"><i class="fa fa-user" aria-hidden="true"></i>Manage Users</a>
+          {% endif %}
           <a href="/settings"><i class="fa fa-cog" aria-hidden="true"></i>Settings</a>
           <a href="/logout"><i class="fa fa-sign-out" aria-hidden="true"></i>Logout</a>
         </ul>

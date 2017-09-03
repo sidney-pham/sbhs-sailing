@@ -28,24 +28,56 @@ class Post {
     this.author_name = data.author_name;
   }
 
-  static get(userId) {
-    const query = 'SELECT n.id, n.title, n.content, n.md_content, n.created_at, n.modified_at, \
-      n.created_by, n.modified_by, m.first_name || \' \' || m.surname AS author_name, \
-      (SELECT Count(*) FROM Likes WHERE Likes.post_id = n.id) AS like_count, \
-      (SELECT Count(*) FROM Likes WHERE Likes.post_id = n.id AND Likes.member_id = $1) AS user_liked \
-      FROM News n INNER JOIN Members m ON n.created_by = m.id \
-      ORDER BY created_at DESC';
+  static get(userId, sort) {
+    const query = 'SELECT user_level FROM Members WHERE id = $1';
+    return db.one(query, [userId]).then(row => {
+      const userLevel = row.user_level;
+      let query = null;
 
-    return db.any(query, userId).then(posts => {
-      posts.map((row, i) => {
-        row.created_at_relative = moment(row.created_at).fromNow();
-        row.user_liked = row.user_liked == '1';
-        row.user_is_author = row.created_by == userId;
+      switch (sort) {
+        case 'new':
+          query = 'SELECT n.id, n.title, n.content, n.md_content, n.created_at, n.modified_at, \
+          n.created_by, n.modified_by, m.first_name || \' \' || m.surname AS author_name, \
+          (SELECT Count(*) FROM Likes WHERE Likes.post_id = n.id) AS like_count, n.pinned, \
+          (SELECT Count(*) FROM Likes WHERE Likes.post_id = n.id AND Likes.member_id = $1) AS user_liked \
+          FROM News n INNER JOIN Members m ON n.created_by = m.id \
+          ORDER BY pinned DESC, created_at DESC';
+          break;
+        case 'old':
+          query = 'SELECT n.id, n.title, n.content, n.md_content, n.created_at, n.modified_at, \
+          n.created_by, n.modified_by, m.first_name || \' \' || m.surname AS author_name, \
+          (SELECT Count(*) FROM Likes WHERE Likes.post_id = n.id) AS like_count, n.pinned, \
+          (SELECT Count(*) FROM Likes WHERE Likes.post_id = n.id AND Likes.member_id = $1) AS user_liked \
+          FROM News n INNER JOIN Members m ON n.created_by = m.id \
+          ORDER BY pinned DESC, created_at ASC';
+          break;
+        case 'top':
+          query = 'SELECT n.id, n.title, n.content, n.md_content, n.created_at, n.modified_at, \
+          n.created_by, n.modified_by, m.first_name || \' \' || m.surname AS author_name, \
+          (SELECT Count(*) FROM Likes WHERE Likes.post_id = n.id) AS like_count, n.pinned, \
+          (SELECT Count(*) FROM Likes WHERE Likes.post_id = n.id AND Likes.member_id = $1) AS user_liked \
+          FROM News n INNER JOIN Members m ON n.created_by = m.id \
+          ORDER BY pinned DESC, like_count DESC';
+          break;
+        default:
+          query = 'SELECT n.id, n.title, n.content, n.md_content, n.created_at, n.modified_at, \
+          n.created_by, n.modified_by, m.first_name || \' \' || m.surname AS author_name, \
+          (SELECT Count(*) FROM Likes WHERE Likes.post_id = n.id) AS like_count, n.pinned, \
+          (SELECT Count(*) FROM Likes WHERE Likes.post_id = n.id AND Likes.member_id = $1) AS user_liked \
+          FROM News n INNER JOIN Members m ON n.created_by = m.id \
+          ORDER BY pinned DESC, created_at DESC';
+      }
+
+      return db.any(query, [userId]).then(posts => {
+        posts.map((row, i) => {
+          row.created_at_relative = moment(row.created_at).fromNow();
+          row.user_liked = row.user_liked == '1';
+          row.user_is_author = row.created_by == userId;
+        });
+
+        return {data: posts, user_level: userLevel};
       });
-
-      // console.log(posts);
-      return posts;
-    });
+    })
   }
 
   static add(post) {
@@ -62,15 +94,27 @@ class Post {
 
   static delete(postId, userId) {
     // Check the author. Then delete, else throw an error.
-    const query = 'DELETE FROM News WHERE id = $1 AND created_by = $2 RETURNING *';
-    return db.oneOrNone(query, [postId, userId]).then(data => {
-      if (data === null) { // Author doesn't match.
-        throw new Error('User doesn\'t have the right permissions.');
+    const query = 'SELECT user_level FROM Members WHERE id = $1';
+    return db.one(query, [userId]).then(row => {
+      const userLevel = row.user_level;
+      if (userLevel === 'admin') {
+        // Can delete any post.
+        const query = 'DELETE FROM News WHERE id = $1 RETURNING *';
+        return db.one(query, [postId]);
+      } else {
+        // Must own the post.
+        const query = 'DELETE FROM News WHERE id = $1 AND created_by = $2 RETURNING *';
+        return db.oneOrNone(query, [postId, userId]).then(data => {
+          if (data === null) { // Author doesn't match.
+            throw new Error('User doesn\'t have the right permissions.');
+          }
+        });
       }
     });
+
   }
 
-  static like(postId, userId) {
+  static like(userId, postId) {
     let query = 'SELECT * FROM Likes WHERE post_id = $1 AND member_id = $2';
     return db.oneOrNone(query, [postId, userId]).then(data => {
       if (data) { // Row exists.
@@ -89,7 +133,30 @@ class Post {
         });
       }
     });
+  }
 
+  static pin(userId, postId) {
+    const query = 'SELECT user_level FROM Members WHERE id = $1';
+    return db.one(query, userId).then(row => {
+      if (row.user_level === 'admin') {
+        const query = 'UPDATE News SET pinned = TRUE WHERE id = $1 RETURNING *';
+        return db.one(query, postId);
+      } else {
+        return Promise.reject(new Error('User not allowed to pin posts.'))
+      }
+    });
+  }
+
+  static unpin(userId, postId) {
+    const query = 'SELECT user_level FROM Members WHERE id = $1';
+    return db.one(query, userId).then(row => {
+      if (row.user_level === 'admin') {
+        const query = 'UPDATE News SET pinned = FALSE WHERE id = $1 RETURNING *';
+        return db.one(query, postId);
+      } else {
+        return Promise.reject(new Error('User not allowed to unpin posts.'))
+      }
+    });
   }
 }
 

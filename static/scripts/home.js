@@ -1,17 +1,44 @@
+let newSort = null;
 document.addEventListener('DOMContentLoaded', () => {
   const submitButton = document.querySelector('#submit-button');
+  const newPost = document.querySelector('.new-post');
   const newPostForm = document.querySelector('.new-post form');
+  const newPostButton = document.querySelector('#new-post-button');
+  const closeNewPostButton = document.querySelector('#close-new-post-button');
+  const sort = document.querySelector('#posts-sort');
   const title = document.querySelector('#new-post-title');
   const content = document.querySelector('#new-post-content');
   const helpButton = document.querySelector('#formatting-help-button');
   const help = document.querySelector('#formatting-help');
   const loginError = document.querySelector('.error-list');
 
+  newSort = sort.value;
+
   // Load news.
-  Post.get();
+  Post.get(newSort);
+
+  // New post button handler.
+  let newPostShown = false;
+  newPostButton.addEventListener('click', event => {
+    newPostShown = !newPostShown;
+    newPost.style.display = newPostShown ? 'block' : 'none';
+    newPostButton.style.display = newPostShown ? 'none': 'block';
+  });
+
+  closeNewPostButton.addEventListener('click', event => {
+    newPostShown = !newPostShown;
+    newPost.style.display = newPostShown ? 'block' : 'none';
+    newPostButton.style.display = newPostShown ? 'none': 'block';
+  });
 
   // Handle height of Content textbox.
   content.addEventListener('input', autoResizeTextbox);
+
+  // Handle sort change.
+  sort.addEventListener('change', event => {
+    newSort = sort.value;
+    Post.get(newSort);
+  });
 
   // Handle formatting help button.
   let helpCounter = 0;
@@ -87,13 +114,17 @@ class Post {
     this.created_at_relative = data.created_at_relative;
     this.created_by = data.created_by;
     this.author_name = data.author_name;
+    this.pinned = data.pinned;
     this.user_is_author = data.user_is_author;
   }
 
   // Render each post.
-  display() {
+  display(userLevel) {
     const newsItem = document.createElement('article');
     newsItem.classList.add('news-item');
+    if (this.pinned) {
+      newsItem.classList.add('news-item-pinned');
+    }
 
     const topBar = document.createElement('div');
     topBar.classList.add('news-item-top-bar');
@@ -104,7 +135,16 @@ class Post {
 
     const title = document.createElement('h3');
     title.classList.add('news-item-title');
-    title.textContent = this.title;
+    if (this.pinned) {
+      const pin = document.createElement('i');
+      pin.classList.add('fa');
+      pin.classList.add('fa-thumb-tack');
+      title.appendChild(pin);
+      const titleText = document.createTextNode(this.title);
+      title.appendChild(titleText);
+    } else {
+      title.textContent = this.title;
+    }
 
     topBar.appendChild(author);
     topBar.appendChild(title);
@@ -149,7 +189,10 @@ class Post {
     saveLi.style.display = 'none';
     const editLi = document.createElement('li');
     const deleteLi = document.createElement('li');
-    // const replyLi = document.createElement('li');
+    const pinLi = document.createElement('li');
+    pinLi.style.display = this.pinned ? 'none' : 'inline-block';
+    const unpinLi = document.createElement('li');
+    unpinLi.style.display = this.pinned ? 'inline-block' : 'none';
 
     // Like button.
     const likeA = document.createElement('a');
@@ -211,33 +254,55 @@ class Post {
     const deleteText = document.createTextNode('Delete');
     deleteA.appendChild(deleteText);
 
-    // Reply button.
-    // const replyA = document.createElement('a');
-    // replyA.classList.add('action-reply');
-    // replyA.href = 'javascript: void 0;';
-    // replyA.setAttribute('title', 'Reply');
-    // const replyButton = document.createElement('i');
-    // replyButton.classList.add('fa');
-    // replyButton.classList.add('fa-reply');
-    // replyButton.setAttribute('aria-hidden', 'true');
-    // replyA.appendChild(replyButton);
-    // const replyText = document.createTextNode('Reply');
-    // replyA.appendChild(replyText);
+    // Pin button.
+    const pinA = document.createElement('a');
+    pinA.classList.add('action-pin');
+    pinA.href = 'javascript: void 0;';
+    pinA.setAttribute('title', 'Pin');
+    const pinButton = document.createElement('i');
+    pinButton.classList.add('fa');
+    pinButton.classList.add('fa-thumb-tack');
+    pinButton.setAttribute('aria-hidden', 'true');
+    pinA.appendChild(pinButton);
+    const pinText = document.createTextNode('Pin');
+    pinA.appendChild(pinText);
+
+    // Unpin button.
+    const unpinA = document.createElement('a');
+    unpinA.classList.add('action-unpin');
+    unpinA.href = 'javascript: void 0;';
+    unpinA.setAttribute('title', 'Unpin');
+    const unpinButton = document.createElement('i');
+    unpinButton.classList.add('fa');
+    unpinButton.classList.add('fa-thumb-tack');
+    unpinButton.setAttribute('aria-hidden', 'true');
+    unpinA.appendChild(unpinButton);
+    const unpinText = document.createTextNode('Unpin');
+    unpinA.appendChild(unpinText);
 
     likeLi.appendChild(likeA);
     saveLi.appendChild(saveA);
     editLi.appendChild(editA);
     deleteLi.appendChild(deleteA);
-    // replyLi.appendChild(replyA);
+    pinLi.appendChild(pinA);
+    unpinLi.appendChild(unpinA);
+
 
     actionsUl.appendChild(likeLi);
     // Make sure user owns the post.
     if (this.user_is_author) {
       actionsUl.appendChild(saveLi);
       actionsUl.appendChild(editLi);
+    }
+
+    if (userLevel === 'admin' || this.user_is_author) {
       actionsUl.appendChild(deleteLi);
     }
-    // actionsUl.appendChild(replyLi);
+
+    if (userLevel === 'admin') {
+      actionsUl.appendChild(pinLi);
+      actionsUl.appendChild(unpinLi);
+    }
 
     actionsContainer.appendChild(actionsUl);
 
@@ -384,25 +449,17 @@ class Post {
     });
 
     deleteA.addEventListener('click', event => {
-      if (!confirm('Are you sure?')) {
-        return;
+      if (confirm('Are you sure?')) {
+        Post.delete(this.id, newsItem);
       }
+    });
 
-      fetch(`/api/news/${this.id}`, {
-        method: 'DELETE',
-        credentials: 'include'
-      }).then(res => {
-        // Get JSON data from Response object.
-        return res.json();
-      }).then(data => {
-        if (data.success) {
-          newsItem.remove();
-        } else {
-          alert(data.message);
-          // alert('You shouldn\'t have done that.');
-          // location.href = '//youtube.com/watch?v=dQw4w9WgXcQ';
-        }
-      });
+    pinA.addEventListener('click', event => {
+      this.pin();
+    });
+
+    unpinA.addEventListener('click', event => {
+      this.unpin();
     });
   }
 
@@ -415,15 +472,52 @@ class Post {
     });
   }
 
-  static get() {
-    return fetch('/api/news', {
+  pin() {
+    return fetch(`/api/news/pin/${this.id}`, {
+      method: 'GET',
+      credentials: 'include'
+    }).then(res => {
+      // Get JSON data from Response object.
+      return res.json();
+    }).then(data => {
+      if (data.success) {
+        // Update news.
+        return Post.get(newSort);
+      } else {
+        throw new Error(data.message);
+      }
+    });
+  }
+
+  unpin() {
+    console.log(this.id);
+    return fetch(`/api/news/unpin/${this.id}`, {
+      method: 'GET',
+      credentials: 'include'
+    }).then(res => {
+      // Get JSON data from Response object.
+      return res.json();
+    }).then(data => {
+      console.log(data);
+      if (data.success) {
+        // Update news.
+        return Post.get(newSort);
+      } else {
+        throw new Error(data.message);
+      }
+    });
+  }
+
+  static get(sort) {
+    return fetch(`/api/news?sort=${sort || ''}`, {
       credentials: 'include'
     }).then(res => {
       // Get JSON data from Response object.
       return res.json();
     }).then(posts => {
       if (posts.success) {
-        posts = posts.data; // posts: array of data objects sorted new->old.
+        const userLevel = posts.data.user_level;
+        posts = posts.data.data; // posts: array of data objects sorted new->old.
 
         // Clear all posts.
         const latestNews = document.querySelector('.latest-news');
@@ -449,7 +543,7 @@ class Post {
         // Display each new post.
         for (const postData of posts) {
           const post = new Post(postData);
-          post.display();
+          post.display(userLevel);
         }
       } else {
         const latestNewsMessage = document.querySelector('.no-posts-message');
@@ -473,7 +567,7 @@ class Post {
       console.log('success');
       if (data.success) {
         // Update news.
-        return Post.get();
+        return Post.get(newSort);
       } else {
         throw new Error(data.message);
       }
@@ -491,6 +585,25 @@ class Post {
       return res.json();
     });
   }
+
+  static delete(id, elementToRemove) {
+    return fetch(`/api/news/${id}`, {
+      method: 'DELETE',
+      credentials: 'include'
+    }).then(res => {
+      // Get JSON data from Response object.
+      return res.json();
+    }).then(data => {
+      if (data.success) {
+        elementToRemove.remove();
+      } else {
+        alert(data.message);
+        // alert('You shouldn\'t have done that.');
+        // location.href = '//youtube.com/watch?v=dQw4w9WgXcQ';
+      }
+    });
+  }
+
 }
 
 function autoResizeTextbox(event) {

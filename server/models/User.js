@@ -4,6 +4,7 @@ const pg = require('pg-promise');
 
 class User {
   constructor(data) {
+    this.id = data.id;
     this.first_name = data.first_name;
     this.surname = data.surname;
     this.email = data.email;
@@ -13,7 +14,7 @@ class User {
     this.student_id = data.student_id;
     this.is_disabled = data.is_disabled;
     this.first_login = data.first_login;
-    this.id = data.id;
+    this.user_level = data.user_level;
   }
 
   // Return an easily displayable name. Display full name unless name too long.
@@ -26,6 +27,15 @@ class User {
       name = 'No Name';
     }
     return name;
+  }
+
+  // Return all users if administrator.
+  static getAll(userId) {
+    const query = 'SELECT user_level FROM Members WHERE id = $1';
+    return db.one(query, userId).then(() => {
+      const query = 'SELECT * FROM MEMBERS WHERE id != $1';
+      return db.any(query, userId);
+    });
   }
 
   // Return a user, or null if no user exists.
@@ -75,6 +85,19 @@ class User {
     });
   }
 
+  static create(data) {
+    const columns = Object.keys(data);
+    let variables = columns.map(column => data[column]);
+    variables.push(this.id);
+
+    let i = 1;
+    const query = `INSERT INTO Members (${columns.join(', ')}) VALUES (${columns.map(_ => '$' + i++).join(', ')}) RETURNING *`;
+
+    return db.one(query, variables).catch(err => {
+      console.error(`Error updating user ${this.id}: `, err);
+    });
+  }
+
   // Update user. TODO: Probably is a security flaw somewhere here. Fix it.
   update(data) {
     const columns = Object.keys(data);
@@ -86,9 +109,7 @@ class User {
       (${columns.map(_ => '$' + i++).join(', ')}) \
       WHERE id = $${columns.length + 1}`;
 
-    return db.none(query, variables).catch(err => {
-      console.error(`Error updating user ${this.id}: `, err);
-    });
+    return db.none(query, variables);
   }
 }
 

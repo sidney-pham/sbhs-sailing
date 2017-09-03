@@ -8,8 +8,19 @@
 
 {% block content %}
 <section class="rosters">
-  <h2 id="rosters-header">Rosters (show past, future, sort)</h2>
-  <button class="trim-button small-button" id="new-roster-button"><i class="fa fa-plus" aria-hidden="true"></i>New</button>
+  <div class="top-bar">
+    <h2 id="rosters-header">Rosters/Events</h2>
+    <label class="sort-label" for="rosters-sort">Sort by:</label>
+    <select class="rosters-sort" id="rosters-sort">
+      <option value="new" selected>Date (earliest - latest)</option>
+      <option value="old">Date (latest - earliest)</option>
+    </select>
+    <label class="show-past-events-label" for="rosters-show-past-events">Show past events:</label>
+    <input type="checkbox" id="rosters-show-past-events">
+    {% if user.user_level == 'admin' %}
+    <button class="trim-button small-button" id="new-roster-button"><i class="fa fa-plus" aria-hidden="true"></i>New</button>
+    {% endif %}
+  </div>
   <section class="new-roster">
     <form class="new-roster-form" novalidate>
       <h3 id="new-roster-header">New Roster</h3>

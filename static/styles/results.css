@@ -3,7 +3,7 @@
 /* -------------------------------------------------------------------------- */
 #results-header {
   display: inline-block;
-  margin: 0 0 20px;
+  margin: 0;
 }
 
 .result-event-name, .result-event-date, .result-event-location {
@@ -12,6 +12,7 @@
 
 .result-event-name {
   font-size: 24px;
+  display: inline-block;
 }
 
 .result-event-date, .result-event-location {
@@ -43,4 +44,95 @@
   height: 50px;
   margin: 0 auto 50px;
   padding: 15px;
+}
+
+
+/**/
+.edit {
+  padding: 10px 10px 10px 0;
+}
+
+.editing {
+  height: 40px;
+  padding: 5px;
+  font-size: 14px;
+}
+
+.edit label {
+  display: inline-block;
+  width: 200px;
+  height: 40px;
+  vertical-align: middle;
+  line-height: 40px;
+}
+
+.edit-save-button {
+  padding: 0 15px;
+  height: 40px;
+  font-size: 18px;
+  border: 0;
+  display: inline;
+  margin: 0 0 5px 0;
+}
+
+.scores {
+  margin-right: 5px;
+  width: 300px;
+  vertical-align: top;
+}
+
+.final-score {
+  width: 100px;
+}
+
+.edit-boats-header {
+  margin: 0 0 10px;
+}
+
+.edit-list {
+  list-style-type: none;
+  margin: 5px 0 0;
+  padding: 0;
+}
+
+/* Actions */
+.news-item-actions {
+  margin-top: 20px;
+}
+
+.news-item-actions ul {
+  list-style-type: none;
+  margin: 10px 0 0;
+  padding: 0;
+}
+
+.news-item-actions li {
+  display: inline-block;
+  margin-right: 0.5em;
+}
+
+.news-item-actions a {
+  color: black;
+  text-decoration: none;
+  padding: 8px 15px;
+  background-color: white;
+}
+
+.news-item-actions a:hover {
+  text-decoration: underline;
+}
+
+.news-item-actions .fa {
+  margin-right: 0.5em;
+}
+
+.sort-label {
+  margin-left: 20px;
+}
+
+.top-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 20px;
 }

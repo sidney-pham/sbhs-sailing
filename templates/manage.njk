@@ -1,0 +1,65 @@
+{% extends 'base-logged-in.njk' %}
+
+{% block title %}Manage Users{% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="/styles/manage.css">
+<script src="/scripts/manage.js"></script>
+{% endblock extra_head %}
+
+{% block content %}
+<h2>Manage Users</h2>
+<button type="button" id="new-user-button" class="trim-button small-button"><i class="fa fa-plus" aria-hidden="true"></i>New User</button>
+<form id="new-user-form" action="/user" method="post" novalidate>
+  <h3>New User</h3>
+  <label for="first-name">First Name</label>
+  <input type="text" name="first_name" id="first-name" placeholder="Required" maxlength="30" required>
+  <label for="surname">Surname</label>
+  <input type="text" name="surname" id="surname" placeholder="Required" maxlength="30" required>
+  <label for="email">Email</label>
+  <input type="email" name="email" id="email" placeholder="">
+  <label for="phone">Phone</label>
+  <input type="tel" name="phone" id="phone" placeholder="">
+  <label for="password">Password</label>
+  <input type="password" name="password" id="password" placeholder="">
+  <label for="student-id">SBHS ID</label>
+  <input type="text" name="student_id" id="student-id" placeholder="">
+  <label for="user-level">Account Level</label>
+  <select class="user-level-dropdown" id="user-level" name="user_level">
+    <option value="regular">regular</option>
+    <option value="admin">admin</option>
+  </select>
+  {# <input type="text" name="user_level" id="user-level" placeholder="" value="{{ edit_user.user_level }}"> #}
+  <label for="account-disabled">Account Disabled</label>
+  <input type="checkbox" name="is_disabled" id="account-disabled" value="true" placeholder="">
+  <ul class="error-list"></ul>
+  <button type="submit" class="trim-button submit-button">Save</button>
+</form>
+<table>
+  <thead>
+    <th>-</th>
+    <th>First Name</th>
+    <th>Surname</th>
+    <th>Email</th>
+    <th>Password</th>
+    <th>Phone</th>
+    <th>SBHS ID</th>
+    <th>Account Disabled</th>
+    <th>Account Level</th>
+  </thead>
+  <tbody>
+    {% for user in users %}
+    <tr>
+      <td><a href="{{ '/user/' + user.id }}">Edit</a></td>
+      <td>{{ user.first_name }}</td>
+      <td>{{ user.surname }}</td>
+      <td>{{ user.email }}</td>
+      <td>{{ user.password }}</td>
+      <td>{{ user.phone }}</td>
+      <td>{{ user.student_id }}</td>
+      <td>{{ user.is_disabled }}</td>
+      <td>{{ user.user_level }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

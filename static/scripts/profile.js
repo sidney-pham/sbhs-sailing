@@ -1,36 +1,22 @@
 document.addEventListener('DOMContentLoaded', () => {
   // Handle log in.
-  const form = document.querySelector('#start-form');
-  const submitButton = document.querySelector('#start-form .submit-button');
+  const form = document.querySelector('#edit-user-form');
+  const submitButton = document.querySelector('#edit-user-form .submit-button');
   const firstName = document.querySelector('#first-name');
   const surname = document.querySelector('#surname');
   const email = document.querySelector('#email');
   const phone = document.querySelector('#phone');
   const password = document.querySelector('#password');
-  const confirmPassword = document.querySelector('#confirm-password');
-  const student_id = document.querySelector('#student_id');
+  const studentId = document.querySelector('#student-id');
+  const userLevel = document.querySelector('#user-level');
+  const accountDisabled = document.querySelector('#account-disabled');
   const loginError = document.querySelector('.error-list');
-  const pwToggle = document.querySelector('#pw-toggle');
-  const changePw = document.querySelector('.change-password');
 
   // Autofocus first field.
   firstName.focus();
 
-  // Password toggle
-  let changePwState = false;
-  pwToggle.addEventListener('click', event => {
-    changePwState = !changePwState;
-    if (changePwState) {
-      changePw.style.display = 'block';
-      pwToggle.textContent = 'Close'
-    } else {
-      changePw.style.display = 'none';
-      pwToggle.textContent = 'Change password';
-    }
-  });
-
   // Attach event handlers to each input control.
-  for (const element of document.querySelectorAll('#start-form input')) {
+  for (const element of document.querySelectorAll('#edit-user-form input')) {
     element.addEventListener('input', event => {
       if (!element.checkValidity()) {
         element.classList.add('invalid');
@@ -60,19 +46,13 @@ document.addEventListener('DOMContentLoaded', () => {
       invalid = true;
     }
 
-    if (!student_id.checkValidity()) {
-      showError(student_id, getErrorMsg('student id', student_id.validity));
-      invalid = true;
-    }
-
     if (!phone.checkValidity()) {
       showError(phone, getErrorMsg('phone', phone.validity));
       invalid = true;
     }
 
-    if (password.value !== confirmPassword.value) {
-      showError(password, 'Passwords must match.');
-      confirmPassword.classList.add('invalid');
+    if (!studentId.checkValidity()) {
+      showError(studentId, getErrorMsg('student id', studentId.validity));
       invalid = true;
     }
 

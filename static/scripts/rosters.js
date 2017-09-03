@@ -1,7 +1,13 @@
+// Global variables for sorting.
+let newSort = null;
+let showPast = null;
+
 document.addEventListener('DOMContentLoaded', () => {
   const newButton = document.querySelector('#new-roster-button');
   const newRoster = document.querySelector('.new-roster');
   const newRosterForm = document.querySelector('.new-roster-form');
+  const sort = document.querySelector('#rosters-sort');
+  const past = document.querySelector('#rosters-show-past-events');
   const errorList = document.querySelector('.error-list');
   const rosterEventName = document.querySelector('#roster-event-name');
   const rosterStartDate = document.querySelector('#roster-start-date');
@@ -16,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const tbody = document.querySelector('.new-roster-table > tbody');
 
   // Load rosters
-  Roster.get();
+  Roster.get(newSort, showPast);
 
   // Make NodeList iterable.
   NodeList.prototype[Symbol.iterator] = Array.prototype[Symbol.iterator];
@@ -24,22 +30,33 @@ document.addEventListener('DOMContentLoaded', () => {
   HTMLCollection.prototype[Symbol.iterator] = Array.prototype[Symbol.iterator];
 
   // Toggle New Roster form.
-  newButton.addEventListener('click', event => {
-    console.log('CLICKED');
+  if (newButton) {
+    newButton.addEventListener('click', event => {
+      if (window.getComputedStyle(newRoster).getPropertyValue('display') === 'none') {
+        newRoster.style.display = 'block';
+        newButton.textContent = 'Close';
+      } else {
+        newRoster.style.display = 'none';
+        const i = document.createElement('i');
+        i.classList.add('fa');
+        i.classList.add('fa-plus');
+        const text = document.createTextNode('New');
+        newButton.textContent = '';
+        newButton.appendChild(i);
+        newButton.appendChild(text);
+      }
+    });
+  }
 
-    if (window.getComputedStyle(newRoster).getPropertyValue('display') === 'none') {
-      newRoster.style.display = 'block';
-      newButton.textContent = 'Close';
-    } else {
-      newRoster.style.display = 'none';
-      const i = document.createElement('i');
-      i.classList.add('fa');
-      i.classList.add('fa-plus');
-      const text = document.createTextNode('New');
-      newButton.textContent = '';
-      newButton.appendChild(i);
-      newButton.appendChild(text);
-    }
+  // Sort change handler.
+  sort.addEventListener('change', event => {
+    newSort = sort.value;
+    Roster.get(newSort, showPast);
+  });
+
+  past.addEventListener('change', event =>{
+    showPast = past.checked;
+    Roster.get(newSort, showPast);
   });
 
   // New Roster submit handler.
@@ -220,7 +237,7 @@ class Roster {
     this.boats = data.boats;
   }
 
-  display() {
+  display(userLevel) {
     const rosterItem = document.createElement('article');
     rosterItem.classList.add('roster-item');
 
@@ -298,19 +315,58 @@ class Roster {
     table.appendChild(tbody);
     rosterItem.appendChild(table);
 
+    const actionsContainer = document.createElement('div');
+    actionsContainer.classList.add('news-item-actions');
+
+    const actionsUl = document.createElement('ul');
+    const deleteLi = document.createElement('li');
+
+    // Delete button.
+    const deleteA = document.createElement('a');
+    deleteA.classList.add('action-delete');
+    deleteA.href = 'javascript: void 0;';
+    deleteA.setAttribute('title', 'Delete');
+    const deleteButton = document.createElement('i');
+    deleteButton.classList.add('fa');
+    deleteButton.classList.add('fa-trash');
+    deleteButton.setAttribute('aria-hidden', 'true');
+    deleteA.appendChild(deleteButton);
+    const deleteText = document.createTextNode('Delete');
+    deleteA.appendChild(deleteText);
+
+    deleteLi.appendChild(deleteA);
+
+    if (userLevel === 'admin') {
+      actionsUl.appendChild(deleteLi);
+    }
+
+    actionsContainer.appendChild(actionsUl);
+
+    rosterItem.appendChild(actionsContainer);
+
     document.querySelector('.rosters').appendChild(rosterItem);
+
+    // Event handlers for actions container.
+    deleteA.addEventListener('click', event => {
+      event.preventDefault();
+      if (confirm('Are you sure?')) {
+        Roster.delete(this.id, rosterItem);
+      }
+    });
   }
 
-  static get() {
-    return fetch('/api/rosters', {
+  static get(sort, past) {
+    past = past ? 'show' : 'hide';
+    return fetch(`/api/rosters?sort=${sort || ''}&past=${past || ''}`, {
       credentials: 'include'
     }).then(res => {
       // Get JSON data from Response object.
       return res.json();
     }).then(rosters => {
-      console.log(rosters);
       if (rosters.success) {
-        rosters = rosters.data; // rosters: array of data objects sorted new->old.
+        console.log(rosters.data);
+        const userLevel = rosters.data.user_level;
+        rosters = rosters.data.data; // rosters: array of data objects.
 
         // Clear all rosters.
         const rostersSection = document.querySelector('.rosters');
@@ -336,7 +392,7 @@ class Roster {
         // Display each new roster.
         for (const data of rosters) {
           const roster = new Roster(data);
-          roster.display();
+          roster.display(userLevel);
         }
       } else {
         const rostersMessage = document.querySelector('.no-rosters-message');
@@ -360,9 +416,31 @@ class Roster {
       console.log('success');
       if (data.success) {
         // Update news.
-        return Roster.get();
+        return Roster.get(newSort, showPast);
       } else {
         throw new Error(data.message);
+      }
+    });
+  }
+
+  static put(data) {
+
+  }
+
+  static delete(id, elementToRemove) {
+    return fetch(`/api/rosters/${id}`, {
+      method: 'DELETE',
+      credentials: 'include'
+    }).then(res => {
+      // Get JSON data from Response object.
+      return res.json();
+    }).then(data => {
+      if (data.success) {
+        elementToRemove.remove();
+      } else {
+        alert(data.message);
+        // alert('You shouldn\'t have done that.');
+        // location.href = '//youtube.com/watch?v=dQw4w9WgXcQ';
       }
     });
   }

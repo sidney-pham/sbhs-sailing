@@ -5,17 +5,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const nonSbhsLogin = document.querySelector('#non-sbhs-login');
   const nonSbhsBack = document.querySelector('#non-sbhs-login-back');
 
-  nonSbhsLogin.style.display = 'none';
-
   nonSbhsButton.addEventListener('click', event => {
-    nonSbhsLogin.style.display = '';
+    nonSbhsLogin.style.display = 'block';
     sbhsLogin.style.display = 'none';
     document.querySelector('#email').focus();
   });
 
   nonSbhsBack.addEventListener('click', event => {
     nonSbhsLogin.style.display = 'none';
-    sbhsLogin.style.display = '';
+    sbhsLogin.style.display = 'block';
     // Reset non-SBHS login.
     clearError();
     for (const element of document.querySelectorAll('#login-form input')) {

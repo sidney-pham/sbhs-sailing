@@ -1,18 +1,33 @@
-.login-container {
-  margin: 60px auto;
-  box-shadow: 0 0 10px 0 white;
-  padding: 50px;
+html {
   background-color: white;
 }
 
-@media (min-width: 900px) {
+.login-container {
+  margin: 30px auto;
+  padding: 80px;
+  background-color: white;
+  /* Uncomment for reasonably cool left and right side borders.*/
+  /*box-shadow: -60px 0px 90px -90px #362018, 60px 0px 90px -90px #362018;
+  border-right: 1px solid #362018;
+  border-left: 1px solid #362018;*/
+}
+
+@media (min-width: 1000px) {
   .login-container {
-    width: 800px;
+    width: 70%;
   }
 }
 
 .login-container a {
   text-decoration: none;
+}
+
+.sbhs-button {
+  width: 60%;
+  height: 60px;
+  border: 0;
+  font-size: 25px;
+  margin: 0 auto 30px;
 }
 
 #login-header {
@@ -25,6 +40,32 @@
 #non-sbhs-button {
   display: block;
   margin: 0 auto;
+}
+
+#non-sbhs-login {
+  display: none;
+  width: 60%;
+  margin: 0 auto;
+}
+
+@media (max-width: 1200px) {
+  .sbhs-button {
+    width: 70%;
+  }
+
+  #non-sbhs-login {
+    width: 70%;
+  }
+}
+
+@media (max-width: 700px) {
+  .sbhs-button {
+    width: 100%;
+  }
+
+  #non-sbhs-login {
+    width: 100%;
+  }
 }
 
 #non-sbhs-login input {

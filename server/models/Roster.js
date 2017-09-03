@@ -9,39 +9,57 @@ class Post {
 
   }
 
-  static get() {
-    const query = 'SELECT * FROM Events ORDER BY start_date DESC';
-    return db.any(query).then(rosters => {
-      for (const roster of rosters) {
-        roster.start_date = moment(roster.start_date).format('dddd, MMMM Do YYYY');
-        if (roster.end_date) {
-          roster.end_date = moment(roster.end_date).format('dddd, MMMM Do YYYY');
+  static get(userId, sort, past) {
+    const query = 'SELECT user_level FROM Members WHERE id = $1';
+    return db.one(query, [userId]).then(row => {
+      const userLevel = row.user_level;
+      let query = null;
+
+      switch (sort) {
+        case 'new':
+        query = `SELECT * FROM Events ${past === 'hide' ? 'WHERE start_date > now()' : ''} ORDER BY start_date ASC`;
+        break;
+        case 'old':
+        query = `SELECT * FROM Events ${past === 'hide' ? 'WHERE start_date > now()' : ''} ORDER BY start_date DESC`;
+        break;
+        default:
+        query = `SELECT * FROM Events ${past === 'hide' ? 'WHERE start_date > now()' : ''} ORDER BY start_date ASC`;
+      }
+
+      return db.any(query).then(rosters => {
+        for (const roster of rosters) {
+          roster.start_date = moment(roster.start_date).format('dddd, MMMM Do YYYY');
+          if (roster.end_date) {
+            roster.end_date = moment(roster.end_date).format('dddd, MMMM Do YYYY');
+          }
         }
-      }
-      return rosters;
-    }).then(rosters => {
-      function getBoatFromBoatAssignment(row) {
-        const boatId = row.boat_id;
-        const query = 'SELECT * FROM Boats WHERE id = $1';
-        return db.one(query, [boatId]);
-      }
+        return rosters;
+      }).then(rosters => {
+        function getBoatFromBoatAssignment(row) {
+          const boatId = row.boat_id;
+          const query = 'SELECT * FROM Boats WHERE id = $1';
+          return db.one(query, [boatId]);
+        }
 
-      function getBoatsFromRoster(roster) {
-        // roster: {id: 11, ...}
-        const eventId = roster.id;
-        const query = 'SELECT * FROM Boat_Assignment WHERE event_id = $1';
-        return db.any(query, [eventId]).then(rows => {
-          return Promise.all(rows.map(row => getBoatFromBoatAssignment(row)));
-        });
-        // Output: [{id: 1, boat_name: 'a', ...}]
-      }
+        function getBoatsFromRoster(roster) {
+          // roster: {id: 11, ...}
+          const eventId = roster.id;
+          const query = 'SELECT * FROM Boat_Assignment WHERE event_id = $1';
+          return db.any(query, [eventId]).then(rows => {
+            return Promise.all(rows.map(row => getBoatFromBoatAssignment(row)));
+          });
+          // Output: [{id: 1, boat_name: 'a', ...}]
+        }
 
-      return Promise.all(rosters.map(roster => {
-        return getBoatsFromRoster(roster).then(boats => {
-          roster.boats = boats;
-          return roster;
+        return Promise.all(rosters.map(roster => {
+          return getBoatsFromRoster(roster).then(boats => {
+            roster.boats = boats;
+            return roster;
+          });
+        })).then(rosters => {
+          return {data: rosters, user_level: userLevel};
         });
-      }));
+      });
     });
   }
 
@@ -90,12 +108,8 @@ class Post {
 
   static delete(postId, userId) {
     // Check the author. Then delete, else throw an error.
-    const query = 'DELETE FROM News WHERE id = $1 AND created_by = $2 RETURNING *';
-    return db.oneOrNone(query, [postId, userId]).then(data => {
-      if (data === null) { // Author doesn't match.
-        throw new Error('User doesn\'t have the right permissions.');
-      }
-    });
+    const query = 'DELETE FROM Events WHERE id = $1 RETURNING *';
+    return db.one(query, [postId]);
   }
 }
 

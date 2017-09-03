@@ -10,7 +10,8 @@ CREATE TABLE Members (
   student_id    VARCHAR(30) UNIQUE,
   first_login   BOOLEAN NOT NULL DEFAULT TRUE,
   is_disabled   BOOLEAN NOT NULL DEFAULT FALSE,
-  user_level    VARCHAR(10)
+  user_level    VARCHAR(10),
+  pinned        BOOLEAN DEFAULT FALSE
 );
 
 -- News contains articles.
@@ -53,8 +54,7 @@ CREATE TABLE Events (
 -- Results contains placings for each boat in each event.
 CREATE TABLE Results (
   id            SERIAL PRIMARY KEY,
-  race_results  INTEGER[], -- Position in each race throughout the event. E.g., [1, 4, 2, 3]
-  overall       INTEGER, -- Overall placing for that event.
+
   boat_id       INTEGER REFERENCES Boats, -- Links to a row in the Boats table.
   event_id      INTEGER REFERENCES Events-- Links to a row in the Events table.
 );
@@ -66,7 +66,9 @@ CREATE TABLE Boats (
   boat_name     VARCHAR(50),
   sail_number   VARCHAR(50),
   skipper       VARCHAR(50),
-  crew          VARCHAR(50)
+  crew          VARCHAR(50),
+  race_results  INTEGER[], -- Position in each race throughout the event. E.g., [1, 4, 2, 3]
+  overall       INTEGER -- Overall placing for that event.
   -- skipper_id    INTEGER REFERENCES Members, -- Links to a row in the Members table.
   -- crew_id       INTEGER REFERENCES Members-- Links to a row in the Members table.
 );
