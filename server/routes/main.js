@@ -68,7 +68,7 @@ router.get('/dump', checkAuth, (req, res) => {
   if (req.user.user_level !== 'admin') {
     return res.redirect('/home');
   }
-  
+
   res.render('dataentry');
 });
 

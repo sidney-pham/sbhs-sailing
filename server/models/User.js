@@ -33,7 +33,7 @@ class User {
   static getAll(userId) {
     const query = 'SELECT user_level FROM Members WHERE id = $1';
     return db.one(query, userId).then(() => {
-      const query = 'SELECT * FROM MEMBERS WHERE id != $1';
+      const query = 'SELECT * FROM MEMBERS WHERE id != $1 ORDER BY id';
       return db.any(query, userId);
     });
   }
