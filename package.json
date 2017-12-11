@@ -4,7 +4,8 @@
   "description": "SBHS Sailing Portal",
   "main": "server/app.js",
   "scripts": {
-    "start": "nodemon server/app.js --ignore sessions/",
+    "serve": "nodemon -w server/ server/index.js",
+    "start": "webpack-dev-server",
     "test": "jest --watch",
     "build": "webpack"
   },
@@ -31,17 +32,30 @@
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-jsx-a11y": "^6.0.2",
     "eslint-plugin-react": "^7.5.1",
-    "jest": "^21.2.1",
+    "jest": "^22.0.4",
     "postcss": "^6.0.14",
     "postcss-cssnext": "^3.0.2",
     "postcss-import": "^11.0.0",
     "postcss-loader": "^2.0.9",
     "style-loader": "^0.19.0",
-    "webpack": "^3.10.0"
+    "webpack": "^3.10.0",
+    "webpack-dev-server": "^2.9.7"
   },
   "dependencies": {
+    "body-parser": "^1.18.2",
+    "compression": "^1.7.1",
+    "crypto": "^1.0.1",
+    "express": "^4.16.2",
+    "express-graphql": "^0.6.11",
+    "express-session": "^1.15.6",
+    "graphql": "^0.11.7",
+    "graphql-tools": "^2.12.0",
+    "node-fetch": "^1.7.3",
+    "pg-promise": "^7.3.2",
     "react": "^16.2.0",
-    "react-dom": "^16.2.0"
+    "react-dom": "^16.2.0",
+    "session-file-store": "^1.2.0",
+    "simple-oauth2": "^1.5.0"
   },
   "browserslist": [
     "> 1%",

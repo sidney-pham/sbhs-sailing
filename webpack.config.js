@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
   context: path.join(__dirname, 'client'),
@@ -30,7 +31,17 @@ module.exports = {
       }
     ]
   },
+  devtool: 'inline-source-map',
+  devServer: {
+    contentBase: path.join(__dirname, 'public'),
+    compress: true,
+    hot: true,
+    open: true,
+    port: 3000
+  },
   plugins: [
+    new webpack.NamedModulesPlugin(),
+    new webpack.HotModuleReplacementPlugin()
     // TODO: Add production minification/uglification.
   ]
 };
