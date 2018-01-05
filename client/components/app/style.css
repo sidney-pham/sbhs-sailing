@@ -1,0 +1,327 @@
+:root {
+  --main-color: teal;
+}
+/* 
+body {
+  background-color: var(--main-color);
+} */
+
+* { box-sizing: border-box; }
+
+html {
+  background-color: #362018;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Lato', sans-serif;
+}
+
+button .fa {
+  margin-right: 0.5em;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Header */
+/* -------------------------------------------------------------------------- */
+header {
+  background-color: #194f73;
+  display: flex;
+  align-items: center;
+  padding: 0 30px;
+}
+
+#sbhs-crest {
+  height: 60px;
+  margin: 10px 30px 10px 0;
+}
+
+#title {
+  font-size: 35px;
+  color: white;
+  margin: 0;
+}
+
+/* Transition adapted from http://ianlunn.github.io/Hover/ */
+/* To use, add another class specifying width, height, font-size and anything else.*/
+.trim-button {
+  color: #194f73;
+  background-color: white;
+  display: block;
+  transform: perspective(1px) translateZ(0);
+  box-shadow: 0 0 1px transparent;
+  transition: background-color 0.3s, color 0.3s;
+  box-shadow: inset 0 0 0 2px #194f73, 0 0 1px transparent;
+}
+
+.trim-button:hover {
+  background-color: #194f73;
+  color: white;
+  cursor: pointer;
+}
+
+.text-button {
+  border: 0;
+  background-color: initial;
+  font-size: 18px;
+  text-decoration: underline;
+}
+
+.text-button > i {
+  text-decoration: none;
+}
+
+.text-button:hover {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.submit-button {
+  font-size: 20px;
+  width: 150px;
+  height: 50px;
+  border: 0;
+  margin: 0 auto 5px;
+}
+
+/* Set standard border color of textboxes and remove outlines. */
+input:not([type="file"]), textarea {
+  border: 1px solid darkgrey;
+  outline: 0;
+}
+
+input:not([type="file"]):focus, textarea:focus {
+  border: 1px solid black;
+}
+
+/* Error list for form validation */
+.error-list {
+  margin: 3px 0 0 0;
+  font-size: 16px;
+  font-weight: lighter;
+  color: crimson;
+  list-style-type: none;
+  padding: 0;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Header */
+/* -------------------------------------------------------------------------- */
+#sbhs-crest {
+  height: 40px;
+}
+
+#title {
+  font-size: 25px;
+}
+
+header nav {
+  flex-grow: 1;
+}
+
+.banner {
+  display: flex;
+  align-items: center;
+  margin-right: 30px;
+}
+
+.navigation {
+  list-style-type: none;
+  font-size: 18px;
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+
+.navigation a {
+  text-decoration: none;
+  color: white;
+  padding: 15px;
+}
+
+.navigation a:hover {
+  color: rgb(240, 240, 240);
+}
+
+.navigation .active a {
+  color: skyblue;
+}
+
+.navigation i {
+  margin-right: 0.5em;
+}
+
+.navigation .fa-caret-down {
+  margin-left: 0.2em;
+  margin-right: 0;
+}
+
+.navigation .user-profile {
+  margin-left: auto;
+}
+
+.user-profile a {
+  margin-left: auto;
+  padding: 5px;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Dropdown */
+/* -------------------------------------------------------------------------- */
+
+.dropdown {
+  position: relative;
+  margin-left: auto;
+}
+
+.dropdown-menu {
+  font-size: 0.9em;
+  display: none;
+  background-color: #194f73;
+  flex-direction: column;
+  position: absolute;
+  top: calc(100% + 16px);
+  right: 0;
+  width: auto;
+  color: white;
+  z-index: 100;
+  padding: 8px 0;
+  white-space: nowrap;  
+  /*border-radius: 3px;*/
+}
+
+/*.dropdown-menu::before {
+  content: " ";
+  width: 0;
+  height: 0;
+  left: 64px;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid #FFFFFF;
+  position: absolute;
+  top: -8px;
+  z-index: 1000;
+}*/
+
+.dropdown-button:focus + .dropdown-menu {
+  display: flex;
+}
+
+.dropdown-button:focus {
+  pointer-events: none;
+  outline: 0;
+}
+
+.dropdown-menu:hover {
+  display: flex;
+}
+
+.dropdown-menu a {
+  padding: 8px 16px;
+}
+
+.dropdown-menu a:hover {
+  background-color: rgba(0,0,0,0.1);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Main Content */
+/* -------------------------------------------------------------------------- */
+main {
+  min-height: 100vh;
+}
+
+main, footer {
+  background-color: white;
+  width: 100%;
+  padding: 30px 50px;
+}
+
+.submit-button-small {
+  margin-left: 0;
+  font-size: 20px;
+  width: 100px;
+  height: 40px;
+  border: 0;
+}
+
+table {
+  border-collapse: collapse;
+  margin-bottom: 30px;
+  overflow-x: auto;
+}
+
+td, th {
+  padding: 10px;
+  text-align: center;
+}
+
+.new-roster-table {
+  border-collapse: separate;
+  border-spacing: 10px 0;
+  margin: 0 auto 30px;
+}
+
+.new-roster-table td {
+  padding: 0;
+}
+
+.new-roster-table td input {
+  margin: 0;
+  padding: 10px;
+  font-size: 16px;
+  text-align: center;
+  width: 100%;
+}
+
+.new-roster-table, .new-roster-table td, .new-roster-table th {
+  border: 0;
+}
+
+.new-roster-table th {
+  font-weight: normal;
+}
+
+table, td, th {
+  border: 1px solid darkgrey;
+}
+
+.small-button {
+  float: right;
+  padding: 0 15px;
+  height: 40px;
+  font-size: 18px;
+  border: 0;
+  display: inline-block;
+  margin-left: 30px;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Footer */
+/* -------------------------------------------------------------------------- */
+footer {
+  border-top: 2px solid brown;
+}
+
+@media (max-width: 1000px) {
+  .navigation i:not(.fa-caret-down) {
+    display: none !important;
+  }
+}
+
+@media (max-width: 850px) {
+  .banner #title {
+    display: none;
+  }
+
+  .banner {
+    margin-right: 0;
+  }
+}
+
+@media (max-width: 700px) {
+  .navigation a {
+    padding: 5px;
+  }
+}

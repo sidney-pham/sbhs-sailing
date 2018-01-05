@@ -9,7 +9,6 @@
     "extends": "airbnb",
     "plugins": ["compat"],
     "rules": {
-        // JavaScript
         "func-style": ["error", "declaration", {
             "allowArrowFunctions": true
         }],
@@ -19,10 +18,14 @@
         "no-param-reassign": 1,
         "no-use-before-define": ["error", { "functions": false, "classes": false }],
 
-        // React
         "react/jsx-filename-extension": 0,
+        "react/self-closing-comp": 0,
 
-        // eslint-plugin-compat
+        "jsx-a11y/anchor-is-valid": ["error", {
+            "components": ["Link"],
+            "specialLink": ["to"]
+        }],
+
         "compat/compat": 2
     }
 }

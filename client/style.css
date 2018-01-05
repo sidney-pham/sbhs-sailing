@@ -1,7 +1,0 @@
-:root {
-  --main-color: teal;
-}
-
-body {
-  background-color: var(--main-color);
-}

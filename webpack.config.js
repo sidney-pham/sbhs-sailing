@@ -1,5 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
+const config = require('./server/config');
 
 module.exports = {
   context: path.join(__dirname, 'client'),
@@ -37,7 +38,13 @@ module.exports = {
     compress: true,
     hot: true,
     open: true,
-    port: 3000
+    port: 3000,
+    proxy: [{
+      // Proxy everything except resources from /public to the server which
+      // redirects to /.
+      context: ['**', '!/', '!/images/**'],
+      target: `http://localhost:${config.port}`
+    }]
   },
   plugins: [
     new webpack.NamedModulesPlugin(),

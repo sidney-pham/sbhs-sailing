@@ -30,6 +30,8 @@ app.use(session({
 // Serve GraphQL API.
 const schema = require('./schema');
 
+// TODO: Add authentication middleware here.
+// By default, the Express request is passed as the GraphQL context.
 app.use('/graphql', graphqlHTTP({
   schema,
   graphiql: true
@@ -37,5 +39,12 @@ app.use('/graphql', graphqlHTTP({
 
 // Login.
 app.use('/', require('./login'));
+
+// Redirect everything else to /. Because the front-end is an SPA, if the user
+// refreshes at say, /rosters, it 404s so instead we redirect them to /.
+// TODO: Redirect unauthenticated users to /login.
+app.use((req, res) => {
+  res.redirect('/');
+});
 
 app.listen(port, () => console.log(`App running on port ${port}`));

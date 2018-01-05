@@ -30,6 +30,21 @@ class User {
 
     return user;
   }
+
+  static async getByID(id) {
+    const query = 'SELECT * FROM Users WHERE id = $1';
+    const user = await db.oneOrNone(query, [id]);
+
+    if (!user) {
+      throw new Error(`No user with ID ${id} in database.`);
+    }
+
+    if (user.account_disabled) {
+      throw new Error('User account disabled.');
+    }
+
+    return user;
+  }
 }
 
 module.exports = User;
