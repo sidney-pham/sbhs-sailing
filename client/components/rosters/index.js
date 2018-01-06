@@ -6,6 +6,10 @@ export default class Home extends React.Component {
     this.state = {};
   }
 
+  componentWillMount() {
+    this.props.setTitle('Rosters');
+  }
+
   render() {
     return (
       <div>

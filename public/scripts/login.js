@@ -48,9 +48,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // Get JSON data from Response object.
         return res.json();
       }).then(data => {
-        if (data.logged_in) {
+        if (data.success) {
           // Logged in.
-          location.reload();
+          window.location.href = '/';
         } else {
           // Wrong email or password.
           showError(data.message);
@@ -110,19 +110,3 @@ document.addEventListener('DOMContentLoaded', () => {
     return text[0].toUpperCase() + (text.slice(1)).toLowerCase();
   }
 });
-
-// function fetch(url, data) {
-//   return new Promise((resolve, reject) => {
-//     let req = new XMLHttpRequest();
-//     req.open(data.method, url);
-//     req.setRequestHeader('Content-Type', 'application/json');
-//     req.onload = () => {
-//       if (this.status == 200) {
-//         resolve(this.response);
-//       } else {
-//         reject(this.response);
-//       }
-//     };
-//     req.send(data.body);
-//   });
-// }

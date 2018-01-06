@@ -3,15 +3,24 @@ import Header from '../header';
 import Main from '../main';
 import './style.css';
 
+function setTitle(title) {
+  document.title = `${title} · SBHS Sailing`;
+}
+
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       user: null
     };
+    this.getUserData = this.getUserData.bind(this);
   }
 
-  async componentDidMount() {
+  componentWillMount() {
+    this.getUserData();
+  }
+  
+  async getUserData() {
     const query = `
     query {
       me {
@@ -45,17 +54,20 @@ class App extends React.Component {
         return res.json();
       }
     });
+
     const user = data.data.me;
     console.log(user);
 
-    this.state.user = user;
+    this.setState({
+      user
+    });
   }
 
   render() {
     return (
       <div>
-        <Header user={this.state.user}/>
-        <Main />
+        <Header user={this.state.user} />
+        <Main user={this.state.user} setTitle={setTitle} />
       </div>
     );
   }

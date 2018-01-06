@@ -14,9 +14,37 @@ export default class Main extends React.Component {
   render() {
     return (
       <main>
-        <Route exact path="/" component={Home} />
-        <Route path="/rosters" component={Rosters} />
-        <Route path="/results" component={Results} />
+        <Route
+          exact
+          path="/"
+          render={routeProps => (
+            <Home
+              {...routeProps}
+              user={this.props.user}
+              setTitle={this.props.setTitle}
+            />
+          )}
+        />
+        <Route
+          path="/rosters"
+          render={routeProps => (
+            <Rosters
+              {...routeProps}
+              user={this.props.user}
+              setTitle={this.props.setTitle}
+            />
+          )}
+        />
+        <Route
+          path="/results"
+          render={routeProps => (
+            <Results
+              {...routeProps}
+              user={this.props.user}
+              setTitle={this.props.setTitle}
+            />
+          )}
+        />
       </main>
     );
   }

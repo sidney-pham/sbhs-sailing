@@ -15,9 +15,9 @@ export default class Header extends React.Component {
   getName() {
     let name;
     if (this.props.user) {
-      console.log('In header: ', this.props.user);
       const { user } = this.props;
-      name = `${user.firstName} ${user.surname}`;
+      const nameExists = user.firstName && user.surname;
+      name = nameExists ? `${user.firstName} ${user.surname}` : 'No Name';
     } else {
       name = 'Not logged in!';
     }
@@ -53,7 +53,9 @@ export default class Header extends React.Component {
                 </Link>
               </li>
               <ul className="dropdown-menu">
-                <Link to="/logout">
+                {/* Send request to server instead of being handled by react-router.
+                See https://github.com/ReactTraining/react-router/issues/3109#issuecomment-189782650 */}
+                <Link to="/logout" target="_self">
                   <i className="fa fa-sign-out" aria-hidden="true"></i>Logout
                 </Link>
               </ul>
