@@ -3,6 +3,7 @@ import { Route } from 'react-router-dom';
 import Home from '../home';
 import Rosters from '../rosters';
 import Results from '../results';
+import './style.css';
 
 export default class Main extends React.Component {
   constructor(props) {

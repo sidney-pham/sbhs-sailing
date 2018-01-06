@@ -9,6 +9,19 @@ export default class Header extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
+    this.getName = this.getName.bind(this);
+  }
+
+  getName() {
+    let name;
+    if (this.props.user) {
+      console.log('In header: ', this.props.user);
+      const { user } = this.props;
+      name = `${user.firstName} ${user.surname}`;
+    } else {
+      name = 'Not logged in!';
+    }
+    return name;
   }
 
   render() {
@@ -34,9 +47,9 @@ export default class Header extends React.Component {
               </NavLink>
             </li>
             <div className="dropdown">
-              <li className="user-profile dropdown-button" onClick="this.focus()" tabindex="-1">
+              <li className="user-profile dropdown-button" onClick={() => this.focus()} tabIndex="-1">
                 <Link to="#">
-                  <i className="fa fa-user" aria-hidden="true"></i>{this.props.user}<i className="fa fa-caret-down" aria-hidden="true"></i>
+                  <i className="fa fa-user" aria-hidden="true"></i>{this.getName()}<i className="fa fa-caret-down" aria-hidden="true"></i>
                 </Link>
               </li>
               <ul className="dropdown-menu">

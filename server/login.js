@@ -1,5 +1,6 @@
 const express = require('express');
 const fetch = require('node-fetch');
+const path = require('path');
 const User = require('./models/user');
 const sbhsAuth = require('./utilities/sbhs-oauth2');
 
@@ -12,6 +13,12 @@ function wrapAsync(fn) {
     fn(req, res, next).catch(next);
   };
 }
+
+// Show login page.
+router.get('/login', (req, res) => {
+  const loginURL = path.join(__dirname, '..', 'public', 'login.html');
+  res.sendFile(loginURL);
+});
 
 // Email and password login.
 router.post('/login', wrapAsync(async (req, res) => {

@@ -6,6 +6,11 @@ export default class Home extends React.Component {
     this.state = {};
   }
 
+  // TODO: Better titling...
+  componentWillMount() {
+    document.title = 'Home';
+  }
+
   render() {
     return (
       <div>

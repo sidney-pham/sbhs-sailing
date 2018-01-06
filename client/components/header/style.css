@@ -1,12 +1,23 @@
+@import '../../variables.css';
 /* -------------------------------------------------------------------------- */
 /* Header */
 /* -------------------------------------------------------------------------- */
+header {
+  background-color: var(--main-blue);
+  display: flex;
+  align-items: center;
+  padding: 0 30px;
+}
+
 #sbhs-crest {
   height: 40px;
+  margin: 10px 30px 10px 0;
 }
 
 #title {
   font-size: 25px;
+  color: white;
+  margin: 0;
 }
 
 header nav {
@@ -33,11 +44,11 @@ header nav {
   padding: 15px;
 }
 
-.navigation a:hover {
-  color: rgb(240, 240, 240);
+.navigation a:not(.active):hover {
+  color: color(white shade(5%));
 }
 
-.navigation .active a {
+.navigation .active {
   color: skyblue;
 }
 
@@ -62,7 +73,6 @@ header nav {
 /* -------------------------------------------------------------------------- */
 /* Dropdown */
 /* -------------------------------------------------------------------------- */
-
 .dropdown {
   position: relative;
   margin-left: auto;
@@ -71,7 +81,7 @@ header nav {
 .dropdown-menu {
   font-size: 0.9em;
   display: none;
-  background-color: #194f73;
+  background-color: var(--main-blue);
   flex-direction: column;
   position: absolute;
   top: calc(100% + 16px);
@@ -81,21 +91,7 @@ header nav {
   z-index: 100;
   padding: 8px 0;
   white-space: nowrap;  
-  /*border-radius: 3px;*/
 }
-
-/*.dropdown-menu::before {
-  content: " ";
-  width: 0;
-  height: 0;
-  left: 64px;
-  border-left: 8px solid transparent;
-  border-right: 8px solid transparent;
-  border-bottom: 8px solid #FFFFFF;
-  position: absolute;
-  top: -8px;
-  z-index: 1000;
-}*/
 
 .dropdown-button:focus + .dropdown-menu {
   display: flex;
@@ -116,4 +112,28 @@ header nav {
 
 .dropdown-menu a:hover {
   background-color: rgba(0,0,0,0.1);
+}
+
+/* Responsive Layout */
+
+@media (max-width: 1000px) {
+  .navigation i:not(.fa-caret-down) {
+    display: none !important;
+  }
+}
+
+@media (max-width: 850px) {
+  .banner #title {
+    display: none;
+  }
+
+  .banner {
+    margin-right: 0;
+  }
+}
+
+@media (max-width: 700px) {
+  .navigation a {
+    padding: 5px;
+  }
 }

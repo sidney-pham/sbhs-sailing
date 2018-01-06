@@ -4,7 +4,10 @@ const config = require('./server/config');
 
 module.exports = {
   context: path.join(__dirname, 'client'),
-  entry: './index.js',
+  // Who the hell knows why I have to do this but the docs say I have to.
+  // All I wanted was for Babel to transpile from ES2017+ to ES2015,
+  // why do I have to install some inane polyfill and modify three files???
+  entry: ['babel-polyfill', './index.js'],
   output: {
     path: path.join(__dirname, 'public'),
     filename: 'app.js'
@@ -42,7 +45,7 @@ module.exports = {
     proxy: [{
       // Proxy everything except resources from /public to the server which
       // redirects to /.
-      context: ['**', '!/', '!/images/**'],
+      context: ['**', '!/login.html', '!/images/**', '!/scripts/**', '!/styles/**'],
       target: `http://localhost:${config.port}`
     }]
   },
