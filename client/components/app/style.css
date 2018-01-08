@@ -13,7 +13,7 @@ body {
 }
 
 /* Font Awesome. */
-button .fa {
+button :global(.fa) {
   margin-right: 0.5em;
 }
 
@@ -94,7 +94,6 @@ input:not([type="file"]):focus, textarea:focus {
 
 table {
   border-collapse: collapse;
-  margin-bottom: 30px;
   overflow-x: auto;
 }
 
