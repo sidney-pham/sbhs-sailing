@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import Home from '../home';
 import Rosters from '../rosters';
 import Results from '../results';
@@ -13,7 +13,7 @@ export default class Main extends React.Component {
 
   render() {
     return (
-      <main>
+      <Switch>
         <Route
           exact
           path="/"
@@ -45,7 +45,7 @@ export default class Main extends React.Component {
             />
           )}
         />
-      </main>
+      </Switch>
     );
   }
 }

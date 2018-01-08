@@ -3,7 +3,7 @@ import {
   Link,
   NavLink
 } from 'react-router-dom';
-import './style.css';
+import styles from './style.css';
 
 export default class Header extends React.Component {
   constructor(props) {
@@ -26,40 +26,42 @@ export default class Header extends React.Component {
 
   render() {
     return (
-      <header>
-        <div className="banner">
+      <header className={styles.header}>
+        <div className={styles.banner}>
           <Link to="/">
-            <img src="/images/sbhs_crest.png" alt="SBHS Crest" id="sbhs-crest" />
+            <img src="/images/sbhs_crest.png" alt="SBHS Crest" className={styles.SBHSCrest} />
           </Link>
-          <h1 id="title">SBHS Sailing Portal</h1>
+          <h1 className={styles.title}>SBHS Sailing Portal</h1>
         </div>
-        <nav>
-          <ul className="navigation">
+        <nav className={styles.navigation}>
+          <ul className={styles.navigationList}>
             <li>
               <NavLink exact to="/" activeClassName="active">
                 <i className="fa fa-home" aria-hidden="true"></i>HOME
               </NavLink>
+            </li>
+            <li>
               <NavLink to="/rosters" activeClassName="active">
                 <i className="fa fa-id-card-o" aria-hidden="true"></i>ROSTERS
               </NavLink>
+            </li>
+            <li>
               <NavLink to="/results" activeClassName="active">
                 <i className="fa fa-newspaper-o" aria-hidden="true"></i>RESULTS
               </NavLink>
             </li>
-            <div className="dropdown">
-              <li className="user-profile dropdown-button" onClick={() => this.focus()} tabIndex="-1">
-                <Link to="#">
-                  <i className="fa fa-user" aria-hidden="true"></i>{this.getName()}<i className="fa fa-caret-down" aria-hidden="true"></i>
-                </Link>
-              </li>
-              <ul className="dropdown-menu">
+            <li tabIndex="-1" className={styles.userProfile}>
+              <Link to="#" className={styles.dropdownButton} onClick={event => event.target.focus()}>
+                <i className="fa fa-user" aria-hidden="true"></i>{this.getName()}<i className="fa fa-caret-down" aria-hidden="true"></i>
+              </Link>
+              <ul className={styles.dropdownMenu}>
                 {/* Send request to server instead of being handled by react-router.
                 See https://github.com/ReactTraining/react-router/issues/3109#issuecomment-189782650 */}
                 <Link to="/logout" target="_self">
                   <i className="fa fa-sign-out" aria-hidden="true"></i>Logout
                 </Link>
               </ul>
-            </div>
+            </li>
           </ul>
         </nav>
       </header>

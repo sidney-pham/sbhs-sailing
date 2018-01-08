@@ -12,9 +12,9 @@ export default class Home extends React.Component {
 
   render() {
     return (
-      <div>
+      <main>
         <h2>Rosters!</h2>
-      </div>
+      </main>
     );
   }
 }

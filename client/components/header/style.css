@@ -1,36 +1,36 @@
 @import '../../variables.css';
-/* -------------------------------------------------------------------------- */
-/* Header */
-/* -------------------------------------------------------------------------- */
-header {
+
+.header {
   background-color: var(--main-blue);
   display: flex;
   align-items: center;
   padding: 0 30px;
 }
 
-#sbhs-crest {
-  height: 40px;
-  margin: 10px 30px 10px 0;
-}
-
-#title {
-  font-size: 25px;
-  color: white;
-  margin: 0;
-}
-
-header nav {
-  flex-grow: 1;
-}
-
+/* Banner */
 .banner {
   display: flex;
   align-items: center;
   margin-right: 30px;
 }
 
+.SBHSCrest {
+  height: 40px;
+  margin: 10px 30px 10px 0;
+}
+
+.title {
+  font-size: 25px;
+  color: white;
+  margin: 0;
+}
+
+/* Navigation */
 .navigation {
+  flex-grow: 1;
+}
+
+.navigationList {
   list-style-type: none;
   font-size: 18px;
   display: flex;
@@ -38,47 +38,43 @@ header nav {
   padding: 0;
 }
 
-.navigation a {
-  text-decoration: none;
+.navigationList a {
   color: white;
+  text-decoration: none;
   padding: 15px;
 }
 
-.navigation a:not(.active):hover {
+.navigationList a:not(.active):hover {
   color: color(white shade(5%));
 }
 
-.navigation .active {
+.navigationList :global(.active) {
   color: skyblue;
 }
 
-.navigation i {
+.navigationList :global(.fa) {
   margin-right: 0.5em;
 }
 
-.navigation .fa-caret-down {
+.navigationList :global(.fa-caret-down) {
   margin-left: 0.2em;
   margin-right: 0;
 }
 
-.navigation .user-profile {
+.userProfile {
   margin-left: auto;
 }
 
-.user-profile a {
-  margin-left: auto;
+.userProfile a {
   padding: 5px;
 }
 
-/* -------------------------------------------------------------------------- */
 /* Dropdown */
-/* -------------------------------------------------------------------------- */
-.dropdown {
+.userProfile {
   position: relative;
-  margin-left: auto;
 }
 
-.dropdown-menu {
+.dropdownMenu {
   font-size: 0.9em;
   display: none;
   background-color: var(--main-blue);
@@ -90,40 +86,39 @@ header nav {
   color: white;
   z-index: 100;
   padding: 8px 0;
-  white-space: nowrap;  
+  white-space: nowrap;
 }
 
-.dropdown-button:focus + .dropdown-menu {
+.dropdownButton:focus + .dropdownMenu {
   display: flex;
 }
 
-.dropdown-button:focus {
+.dropdownButton:focus {
   pointer-events: none;
   outline: 0;
 }
 
-.dropdown-menu:hover {
+.dropdownMenu:hover {
   display: flex;
 }
 
-.dropdown-menu a {
+.dropdownMenu a {
   padding: 8px 16px;
 }
 
-.dropdown-menu a:hover {
+.dropdownMenu a:hover {
   background-color: rgba(0,0,0,0.1);
 }
 
 /* Responsive Layout */
-
 @media (max-width: 1000px) {
-  .navigation i:not(.fa-caret-down) {
+  .navigationList :global(.fa):not(.fa-caret-down) {
     display: none !important;
   }
 }
 
 @media (max-width: 850px) {
-  .banner #title {
+  .banner .title {
     display: none;
   }
 

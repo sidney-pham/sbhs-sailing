@@ -5,7 +5,7 @@ const config = require('./server/config');
 module.exports = {
   context: path.join(__dirname, 'client'),
   // Who the hell knows why I have to do this but the docs say I have to.
-  // All I wanted was for Babel to transpile from ES2017+ to ES2015,
+  // All I wanted was for Babel to transpile from ES2017 to ES2015,
   // why do I have to install some inane polyfill and modify three files???
   entry: ['babel-polyfill', './index.js'],
   output: {
@@ -27,6 +27,8 @@ module.exports = {
           {
             loader: 'css-loader',
             options: {
+              modules: true,
+              localIdentName: '[path][name]__[local]--[hash:base64:5][emoji:3]',
               importLoaders: 1
             }
           },
