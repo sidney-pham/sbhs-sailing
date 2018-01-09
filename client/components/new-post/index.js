@@ -81,17 +81,14 @@ export default class NewPost extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      open: true,
-      formattingHelpOpen: false
+      formattingHelpOpen: false,
+      title: '',
+      content: ''
     };
     this.toggleFormattingHelp = this.toggleFormattingHelp.bind(this);
-    this.toggleOpen = this.toggleOpen.bind(this);
-  }
-
-  toggleOpen() {
-    this.setState(prevState => ({
-      open: !prevState.open
-    }));
+    this.confirmBeforeClosing = this.confirmBeforeClosing.bind(this);
+    this.handleTitle = this.handleTitle.bind(this);
+    this.handleContent = this.handleContent.bind(this);
   }
 
   toggleFormattingHelp() {
@@ -100,32 +97,50 @@ export default class NewPost extends React.Component {
     }));
   }
 
+  confirmBeforeClosing(event) {
+    const someContent = this.state.title || this.state.content;
+    const close = someContent
+      ? window.confirm('You will lose your new post, are you sure you want to close?')
+      : true;
+    if (close) {
+      this.props.toggleNewPostOpen(event);
+    }
+  }
+
+  handleTitle(event) {
+    this.setState({ title: event.target.value });
+  }
+
+  handleContent(event) {
+    this.setState({ content: event.target.value });
+  }
+
   render() {
     return (
       <section className={styles.newPost}>
         <form noValidate>
           <div className={styles.topBar}>
             <h2 className={styles.title}>New Post</h2>
-            <button type="button" className={styles.closeButton} onClick={this.toggleOpen}>{this.state.open ? 'Close' : 'Open'}</button>
+            {this.props.newPostOpen &&
+              <button type="button" className={styles.closeButton} onClick={this.confirmBeforeClosing}>Close</button>
+            }
           </div>
-          { this.state.open &&
-            <div>
-              <input className={styles.postTitle} type="text" placeholder="Title" maxLength="100" required />
-              <textarea className={styles.postContent} autoCorrect="off" autoCapitalize="off" spellCheck="false" tabIndex="0" maxLength="10000" placeholder="Content"></textarea>
-              <ul className="error-list"></ul> {/* TODO: Make into a component. */}
-              <button>Submit</button>
-              <button type="button" onClick={this.toggleFormattingHelp}>
-                {this.state.formattingHelpOpen ? 'Hide' : 'Formatting Help'}
-              </button>
-              { this.state.formattingHelpOpen &&
-                <div className={styles.formattingHelp}>
-                  <p>You can use Github-flavoured <a href="http://daringfireball.net/projects/markdown/syntax">Markdown</a> for formatting. See below for some basics, or use <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">the Markdown Cheatsheet</a> for a quick and easy reference.</p>
-                  <p>Note: Use two newlines for a new paragraph.</p>
-                  <FormattingTable />
-                </div>
-              }
-            </div>
-          }
+          <div>
+            <input className={styles.postTitle} onChange={this.handleTitle} type="text" value={this.state.title} placeholder="Title" maxLength="100" required />
+            <textarea className={styles.postContent} onChange={this.handleContent} value={this.state.content} autoCorrect="off" autoCapitalize="off" spellCheck="false" tabIndex="0" maxLength="10000" placeholder="Content" />
+            <ul className="error-list"></ul> {/* TODO: Make into a component. */}
+            <button>Submit</button>
+            <button type="button" onClick={this.toggleFormattingHelp}>
+              {this.state.formattingHelpOpen ? 'Hide' : 'Formatting Help'}
+            </button>
+            { this.state.formattingHelpOpen &&
+              <div className={styles.formattingHelp}>
+                <p>You can use Github-flavoured <a href="http://daringfireball.net/projects/markdown/syntax">Markdown</a> for formatting. See below for some basics, or use <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">the Markdown Cheatsheet</a> for a quick and easy reference.</p>
+                <p>Note: Use two newlines for a new paragraph.</p>
+                <FormattingTable />
+              </div>
+            }
+          </div>
         </form>
       </section>
     );

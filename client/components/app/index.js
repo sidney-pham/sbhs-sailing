@@ -34,7 +34,7 @@ class App extends React.Component {
       }
     }
     `;
-    const data = await fetch('/graphql', {
+    const user = await fetch('/graphql', {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -51,11 +51,10 @@ class App extends React.Component {
         window.location.href = res.url;
       } else {
         // All good!
-        return res.json();
+        return res.json().then(res => res.data.me);
       }
     });
-
-    const user = data.data.me;
+    
     console.log(user);
 
     this.setState({

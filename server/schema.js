@@ -20,6 +20,7 @@ type User {
 }
 
 type Post {
+  id: ID!
   title: String!
   author: Author!
   content: String!
@@ -41,10 +42,19 @@ const resolvers = {
     user: (_parentValue, { id }) => User.getByID(id),
     newsfeed: () => [
       {
+        id: 1,
         title: 'Hello, World!',
         content: 'First post here.',
         author: {
           name: 'Sidney Pham'
+        }
+      },
+      {
+        id: 2,
+        title: 'Second Post!',
+        content: 'Second post here.',
+        author: {
+          name: 'Not Sidney Pham'
         }
       }
     ],

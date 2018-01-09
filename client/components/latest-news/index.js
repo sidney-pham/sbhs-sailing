@@ -6,8 +6,7 @@ export default class LatestNews extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      sort: 'new',
-      posts: null
+      sort: 'new'
     };
     this.setSort = this.setSort.bind(this);
   }
@@ -30,9 +29,11 @@ export default class LatestNews extends React.Component {
               <option value="top">Top</option>
             </select>
           </label>
-          <button type="button"><i className="fa fa-plus" aria-hidden="true"></i>New Post</button>
+          {!this.props.newPostOpen &&
+            <button type="button" onClick={this.props.toggleNewPostOpen}><i className="fa fa-plus" aria-hidden="true"></i>New Post</button>
+          }
         </div>
-        {this.state.posts ? <Posts user={this.props.user} /> : <p>Loading posts...</p>}
+        <Posts user={this.props.user} />
       </section>
     );
   }

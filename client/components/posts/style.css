@@ -1,1 +1,11 @@
 @import '../../variables.css';
+
+.postsList {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.postsList li:last-child article {
+  margin-bottom: 0;
+}
