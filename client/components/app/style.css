@@ -13,7 +13,7 @@ body {
 }
 
 /* Font Awesome. */
-button :global(.fa) {
+:global(.fa) {
   margin-right: 0.5em;
 }
 

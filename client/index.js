@@ -10,3 +10,4 @@ ReactDOM.render((
   </Router>
 ), document.getElementById('app'));
 // Screw you React for not letting me target document.body 😡.
+// TODO: Fix double div thing.

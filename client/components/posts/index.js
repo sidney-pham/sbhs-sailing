@@ -1,5 +1,6 @@
 import React from 'react';
 import Post from '../post';
+import queryAPI from '../../utilities/request';
 import styles from './style.css';
 
 export default class Posts extends React.Component {
@@ -22,23 +23,19 @@ export default class Posts extends React.Component {
       newsfeed {
         id
         author {
-          name
+          firstName
+          surname
         }
         title
         content
+        createdAt
+        likes
+        pinned
+        likedByUser
       }
     }
     `;
-    const posts = await fetch('/graphql', {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        query
-      })
-    }).then(res => res.json()).then(data => data.data.newsfeed);
+    const posts = await queryAPI(query).then(data => data.data.newsfeed);
     this.setState({ posts });
   }
 
@@ -47,9 +44,10 @@ export default class Posts extends React.Component {
     if (!posts) {
       return <p>Loading posts...</p>;
     }
+    console.log(posts);
     return (
       <ul className={styles.postsList}>
-        {posts.map(post => <Post key={post.id} post={post} />)}
+        {posts.map(post => <Post key={post.id} post={post} user={this.props.user} />)}
       </ul>
     )
   }

@@ -1,5 +1,6 @@
 const { makeExecutableSchema } = require('graphql-tools');
 const User = require('./models/user');
+const Post = require('./models/post');
 
 const typeDefs = `
 type Query {
@@ -22,12 +23,34 @@ type User {
 type Post {
   id: ID!
   title: String!
-  author: Author!
   content: String!
+  author: User!
+  createdAt: String!
+  likes: Int!
+  pinned: Boolean!
+  likedByUser: Boolean!
 }
 
-type Author {
-  name: String!
+type Mutation {
+  likePost(
+    postID: ID!
+  ): Post
+  pinPost(
+    postID: ID!
+  ): Post
+  updatePost(
+    postID: ID!
+    title: String!
+    content: String!
+  ): Post
+  deletePost(
+    postID: ID!
+  ): ID
+}
+
+schema {
+  query: Query
+  mutation: Mutation
 }
 `;
 
@@ -40,25 +63,16 @@ const resolvers = {
       return User.getByID(req.session.userID);
     },
     user: (_parentValue, { id }) => User.getByID(id),
-    newsfeed: () => [
-      {
-        id: 1,
-        title: 'Hello, World!',
-        content: 'First post here.',
-        author: {
-          name: 'Sidney Pham'
-        }
-      },
-      {
-        id: 2,
-        title: 'Second Post!',
-        content: 'Second post here.',
-        author: {
-          name: 'Not Sidney Pham'
-        }
-      }
-    ],
+    newsfeed: (_parentValue, _args, req) => Post.getPosts(req.session.userID),
     raceResults: () => [1, 3, 5, 6, 12, 2]
+  },
+  Mutation: {
+    likePost: (_parentValue, { postID }, req) => Post.like(postID, req.session.userID),
+    pinPost: (_parentValue, { postID }, req) => Post.pin(postID, req.session.userID),
+    updatePost: (_parentValue, { postID, title, content }, req) => (
+      Post.update(postID, req.session.userID, title, content)
+    ),
+    deletePost: (_parentValue, { postID }, req) => Post.delete(postID, req.session.userID)
   },
   User: {
     firstName: parentValue => parentValue.first_name,
@@ -68,6 +82,16 @@ const resolvers = {
     userLevel: parentValue => parentValue.user_level,
     accountDisabled: parentValue => parentValue.account_disabled,
     email: parentValue => parentValue.email
+  },
+  Post: {
+    id: parentValue => parentValue.id,
+    title: parentValue => parentValue.title,
+    content: parentValue => parentValue.content,
+    author: parentValue => User.getByID(parentValue.created_by),
+    createdAt: parentValue => parentValue.created_at,
+    likes: parentValue => parentValue.likes,
+    pinned: parentValue => parentValue.pinned,
+    likedByUser: parentValue => parentValue.user_liked
   }
 };
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import Header from '../header';
 import Main from '../main';
+import queryAPI from '../../utilities/request';
 import './style.css';
 
 function setTitle(title) {
@@ -34,27 +35,7 @@ class App extends React.Component {
       }
     }
     `;
-    const user = await fetch('/graphql', {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        query
-      })
-    }).then(res => {
-      console.log(res);
-      if (res.redirected) {
-        // GraphQL endpoint requires authentication so if we're not logged in,
-        // it redirects us to login.
-        window.location.href = res.url;
-      } else {
-        // All good!
-        return res.json().then(res => res.data.me);
-      }
-    });
-    
+    const user = await queryAPI(query).then(data => data.data.me);
     console.log(user);
 
     this.setState({
