@@ -17,7 +17,7 @@
 }
 
 .closeButton {
-  
+  margin-left: auto;
 }
 
 /* Form Input */
@@ -42,13 +42,8 @@
   transition: height 0.5s cubic-bezier(0.215, 0.61, 0.355, 1);
 }
 
-.postContent:focus {
-  height: 100px;
-}
-
 /* Formatting Help */
 .formattingHelp {
-  /* display: none; */
   margin-top: 15px;
   border-top: 1px solid darkgrey;
   border-bottom: 1px solid darkgrey;

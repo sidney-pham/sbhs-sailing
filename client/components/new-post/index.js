@@ -1,4 +1,6 @@
 import React from 'react';
+import classNames from 'classnames';
+import queryAPI from '../../utilities/request';
 import styles from './style.css';
 
 function FormattingTable() {
@@ -87,6 +89,7 @@ export default class NewPost extends React.Component {
     };
     this.toggleFormattingHelp = this.toggleFormattingHelp.bind(this);
     this.confirmBeforeClosing = this.confirmBeforeClosing.bind(this);
+    this.addPost = this.addPost.bind(this);
     this.handleTitle = this.handleTitle.bind(this);
     this.handleContent = this.handleContent.bind(this);
   }
@@ -107,30 +110,83 @@ export default class NewPost extends React.Component {
     }
   }
 
+  async addPost(event) {
+    event.preventDefault();
+    const query = `
+    mutation ($title: String!, $content: String!) {
+      addPost(title: $title, content: $content) {
+        id
+      }
+    }
+    `;
+    const variables = {
+      title: this.state.title,
+      content: this.state.content
+    };
+    const submitted = await queryAPI(query, variables).then(data => data.data.addPost.id);
+    if (submitted) {
+      this.setState({
+        title: '',
+        content: ''
+      });
+      this.props.refreshPosts();
+      this.props.toggleNewPostOpen();
+    }
+  }
+
   handleTitle(event) {
     this.setState({ title: event.target.value });
   }
 
   handleContent(event) {
-    this.setState({ content: event.target.value });
+    const textArea = event.target;
+    const content = textArea.value;
+    if (content === '') {
+      textArea.style.height = '';
+    } else {
+      textArea.style.height = 'auto';
+      textArea.style.height = `${textArea.scrollHeight > 100 ? textArea.scrollHeight : '100'}px`;
+    }
+    this.setState({ content });
   }
 
   render() {
     return (
       <section className={styles.newPost}>
-        <form noValidate>
+        <form onSubmit={this.addPost} noValidate>
           <div className={styles.topBar}>
             <h2 className={styles.title}>New Post</h2>
             {this.props.newPostOpen &&
-              <button type="button" className={styles.closeButton} onClick={this.confirmBeforeClosing}>Close</button>
+              <button type="button" className={classNames('smallButton', styles.closeButton)} onClick={this.confirmBeforeClosing}>
+                <i className="fa fa-close" aria-hidden="true"></i>Close
+              </button>
             }
           </div>
           <div>
-            <input className={styles.postTitle} onChange={this.handleTitle} type="text" value={this.state.title} placeholder="Title" maxLength="100" required />
-            <textarea className={styles.postContent} onChange={this.handleContent} value={this.state.content} autoCorrect="off" autoCapitalize="off" spellCheck="false" tabIndex="0" maxLength="10000" placeholder="Content" />
+            <input
+              className={styles.postTitle}
+              onChange={this.handleTitle}
+              type="text"
+              value={this.state.title}
+              placeholder="Title"
+              maxLength="100"
+              autoFocus
+              required
+            />
+            <textarea
+              className={styles.postContent}
+              onChange={this.handleContent}
+              value={this.state.content}
+              autoCorrect="off"
+              autoCapitalize="off"
+              spellCheck="false"
+              tabIndex="0"
+              maxLength="10000"
+              placeholder="Content"
+            />
             <ul className="error-list"></ul> {/* TODO: Make into a component. */}
-            <button>Submit</button>
-            <button type="button" onClick={this.toggleFormattingHelp}>
+            <input type="submit" value="Submit" className="smallButton" />
+            <button type="button" className="textButton" onClick={this.toggleFormattingHelp}>
               {this.state.formattingHelpOpen ? 'Hide' : 'Formatting Help'}
             </button>
             { this.state.formattingHelpOpen &&

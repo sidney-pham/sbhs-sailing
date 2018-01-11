@@ -8,11 +8,33 @@ class Post {
     return db.one(query, [userID, postID]);
   }
 
-  static async getPosts(userID) {
+  static async getPosts(userID, sort) {
     const query = `SELECT *, (SELECT Count(*) FROM Likes WHERE Likes.post_id = p.id) AS likes,
       (EXISTS (SELECT * FROM Likes WHERE Likes.post_id = p.id AND Likes.user_id = $1)) AS user_liked
       FROM Posts AS p`;
-    return db.any(query, [userID]);
+
+    const posts = await db.any(query, [userID, sort]);
+    // I don't know how Array.prototype.sort() works but, this seems to work.
+    posts.sort((a, b) => {
+      if (sort === 'old') {
+        return a.created_at - b.created_at;
+      } else if (sort === 'top') {
+        return b.likes - a.likes;
+      } else {
+        // sort === 'new', probably.
+        return b.created_at - a.created_at;
+      }
+    });
+    return posts;
+  }
+
+  static async addPost(title, content, userID) {
+    const query = `INSERT INTO Posts (title, content, created_by) VALUES
+      ($1, $2, $3) RETURNING id`;
+    const postID = await db.one(query, [title, content, userID]).then(row => row.id);
+
+    // Return post.
+    return Post.getPost(postID, userID);
   }
 
   static async like(postID, userID) {

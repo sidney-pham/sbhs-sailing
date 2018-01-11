@@ -33,10 +33,7 @@ export default class Post extends React.Component {
     const variables = {
       postID: this.state.id
     };
-    const { likes, likedByUser } = await queryAPI(query, variables).then(data => {
-      console.log(data);
-      return data.data.likePost;
-    });
+    const { likes, likedByUser } = await queryAPI(query, variables).then(data => data.data.likePost);
     this.setState({ likes, likedByUser });
   }
 
@@ -79,17 +76,19 @@ export default class Post extends React.Component {
   }
 
   async delete() {
-    const query = `
-    mutation ($postID: ID!) {
-      deletePost(postID: $postID)
-    }
-    `;
-    const variables = {
-      postID: this.state.id
-    };
-    const postToDeleteID = await queryAPI(query, variables).then(data => data.data.deletePost);
-    if (postToDeleteID) {
-      this.setState({ deleted: true });
+    if (window.confirm('Are you sure you want to delete this post?')) {
+      const query = `
+      mutation ($postID: ID!) {
+        deletePost(postID: $postID)
+      }
+      `;
+      const variables = {
+        postID: this.state.id
+      };
+      const postToDeleteID = await queryAPI(query, variables).then(data => data.data.deletePost);
+      if (postToDeleteID) {
+        this.setState({ deleted: true });
+      }
     }
   }
 
@@ -106,6 +105,9 @@ export default class Post extends React.Component {
     };
     const pinned = await queryAPI(query, variables).then(data => data.data.pinPost.pinned);
     this.setState({ pinned });
+
+    // Refresh posts so newly pinned post floats to top or returns back if unpinned.
+    this.props.refreshPosts();
   }
 
   changeTitle(event) {
@@ -146,6 +148,8 @@ export default class Post extends React.Component {
           tabIndex="0"
           maxLength="10000"
           placeholder="Content"
+          autoFocus
+          required
         />
       );
     } else {
@@ -169,17 +173,15 @@ export default class Post extends React.Component {
           {topBar}
           <div className={styles.info}>
             <div className={styles.likes}>{`${post.likes} ${post.likes == 1 ? 'like' : 'likes'}`}</div>
-            <time
-              className={styles.date}
-              title={date.format()}
-              dateTime={date.toISOString()}
-            >{date.fromNow()}</time> 
+            <time className={styles.date} title={date.format()} dateTime={date.toISOString()}>
+              {date.fromNow()}
+            </time>
           </div>
           {content}
           <ul className={styles.actionsBar}>
             <li>
               <button title="Like" onClick={this.like}>
-                <i className={classNames('fa', 'fa-heart', { [styles.liked]: post.likedByUser })}></i>
+                <i className={classNames('fa', post.likedByUser ? 'fa-heart' : 'fa-heart-o', { [styles.liked]: post.likedByUser })}></i>
                 {post.likedByUser ? 'Liked' : 'Like'}
               </button>
             </li>

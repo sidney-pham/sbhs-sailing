@@ -25,6 +25,7 @@
             "components": ["Link"],
             "specialLink": ["to"]
         }],
+        "jsx-a11y/no-autofocus": 0,
 
         "compat/compat": 2
     }

@@ -56,7 +56,6 @@ function checkAuth(req, res, next) {
       return next();
     });
   } else {
-    console.log('Redirecting to /login.');
     res.redirect('/login');
   }
 }

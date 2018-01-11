@@ -36,7 +36,6 @@ class App extends React.Component {
     }
     `;
     const user = await queryAPI(query).then(data => data.data.me);
-    console.log(user);
 
     this.setState({
       user

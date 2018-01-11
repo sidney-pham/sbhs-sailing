@@ -6,7 +6,7 @@ const typeDefs = `
 type Query {
   me: User
   user(id: ID!): User
-  newsfeed: [Post]!
+  newsfeed(sort: String): [Post]!
   raceResults: [Int]!
 }
 
@@ -32,6 +32,10 @@ type Post {
 }
 
 type Mutation {
+  addPost(
+    title: String!
+    content: String!
+  ): Post
   likePost(
     postID: ID!
   ): Post
@@ -63,10 +67,13 @@ const resolvers = {
       return User.getByID(req.session.userID);
     },
     user: (_parentValue, { id }) => User.getByID(id),
-    newsfeed: (_parentValue, _args, req) => Post.getPosts(req.session.userID),
+    newsfeed: (_parentValue, { sort }, req) => Post.getPosts(req.session.userID, sort),
     raceResults: () => [1, 3, 5, 6, 12, 2]
   },
   Mutation: {
+    addPost: (_parentValue, { title, content }, req) => (
+      Post.addPost(title, content, req.session.userID)
+    ),
     likePost: (_parentValue, { postID }, req) => Post.like(postID, req.session.userID),
     pinPost: (_parentValue, { postID }, req) => Post.pin(postID, req.session.userID),
     updatePost: (_parentValue, { postID, title, content }, req) => (
@@ -88,7 +95,7 @@ const resolvers = {
     title: parentValue => parentValue.title,
     content: parentValue => parentValue.content,
     author: parentValue => User.getByID(parentValue.created_by),
-    createdAt: parentValue => parentValue.created_at,
+    createdAt: parentValue => parentValue.created_at.toISOString(),
     likes: parentValue => parentValue.likes,
     pinned: parentValue => parentValue.pinned,
     likedByUser: parentValue => parentValue.user_liked

@@ -87,8 +87,6 @@ router.get('/login/sbhs/callback', wrapAsync(async (req, res) => {
       }
     }).then(response => response.json());
 
-    console.log(SBHSData);
-
     const studentID = SBHSData.username;
     const user = await User.getByStudentID(studentID);
     req.session.userID = user.id;

@@ -74,7 +74,7 @@ footer {
 }
 
 /* Set standard border color of textboxes and remove outlines. */
-input:not([type="file"]), textarea {
+input:not([type="file"]):not([type="submit"]), textarea {
   border: 1px solid darkgrey;
   outline: 0;
 }
@@ -140,4 +140,39 @@ table, td, th {
   border: 0;
   display: inline-block;
   margin-left: 30px;
+}
+
+/* New stuff */
+:global(.smallButton) {
+  padding: 0 15px;
+  height: 40px;
+  font-size: 18px;
+  border: 0;
+  background-color: white;
+  color: var(--main-blue);
+  transition: background-color 0.3s, color 0.3s;
+  box-shadow: inset 0 0 0 2px var(--main-blue), 0 0 1px transparent;
+}
+
+:global(.smallButton):hover {
+  background-color: var(--main-blue);
+  color: white;
+  cursor: pointer;
+}
+
+:global(.textButton) {
+  border: 0;
+  background-color: white;
+  font-size: 16px;
+  padding: 0;
+  margin: 0;
+  color: black;
+  display: inline-block;
+  vertical-align: bottom;
+  text-decoration: underline;
+  margin-left: 0.5em;
+}
+
+:global(.textButton):hover {
+  cursor: pointer;
 }
