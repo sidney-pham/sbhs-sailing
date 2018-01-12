@@ -1,4 +1,16 @@
 const db = require('../utilities/db');
+const marked = require('marked');
+
+marked.setOptions({
+  renderer: new marked.Renderer(),
+  gfm: true,
+  tables: true,
+  breaks: true,
+  pedantic: false,
+  sanitize: true,
+  smartLists: true,
+  smartypants: false
+});
 
 class Post {
   static async getPost(postID, userID) {
@@ -34,9 +46,9 @@ class Post {
       return Promise.reject(new Error('Post is not valid.'));
     }
 
-    const query = `INSERT INTO Posts (title, content, created_by) VALUES
-      ($1, $2, $3) RETURNING id`;
-    const postID = await db.one(query, [title, content, userID]).then(row => row.id);
+    const query = `INSERT INTO Posts (title, content, markdown_content, created_by) VALUES
+      ($1, $2, $3, $4) RETURNING id`;
+    const postID = await db.one(query, [title, content, marked(content), userID]).then(row => row.id);
 
     // Return post.
     return Post.getPost(postID, userID);
@@ -80,9 +92,9 @@ class Post {
       return Promise.reject(new Error('Post is not valid.'));
     }
 
-    const query = `UPDATE Posts SET title = $1, content = $2, modified_by = $3
-      WHERE id = $4`;
-    await db.none(query, [title, content, userID, postID]);
+    const query = `UPDATE Posts SET title = $1, content = $2, markdown_content = $3, modified_by = $4
+      WHERE id = $5`;
+    await db.none(query, [title, content, marked(content), userID, postID]);
 
     // Return post.
     return Post.getPost(postID, userID);

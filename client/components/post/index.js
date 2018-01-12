@@ -44,6 +44,7 @@ export default class Post extends React.Component {
       updatePost(postID: $postID, title: $title, content: $content) {
         title
         content
+        markdownContent
       }
     }
     `;
@@ -52,8 +53,8 @@ export default class Post extends React.Component {
       title: this.state.title,
       content: this.state.content
     };
-    const { title, content } = await queryAPI(query, variables).then(data => data.data.updatePost);
-    this.setState({ title, content, editing: false });
+    const { title, content, markdownContent } = await queryAPI(query, variables).then(data => data.data.updatePost);
+    this.setState({ title, content, markdownContent, editing: false });
   }
 
   edit() {
@@ -127,7 +128,15 @@ export default class Post extends React.Component {
   }
 
   changeContent(event) {
-    this.setState({ content: event.target.value });
+    const textArea = event.target;
+    const content = textArea.value;
+    if (content === '') {
+      textArea.style.height = '';
+    } else {
+      textArea.style.height = 'auto';
+      textArea.style.height = `${textArea.scrollHeight > 100 ? textArea.scrollHeight : '100'}px`;
+    }
+    this.setState({ content: textArea.value });
   }
 
   render() {
@@ -153,6 +162,22 @@ export default class Post extends React.Component {
         <textarea
           className={styles.editingContent}
           value={post.content}
+          // We need to resize the textArea on mounting so the text doesn't overflow.
+          // We're basically doing everything in this.changeContent except it doesn't work if
+          // we just call that here for some reason.
+          // `if (textArea)` is required because ref gets called with null on unmount.
+          // See: https://reactjs.org/docs/refs-and-the-dom.html.
+          ref={textArea => {
+            if (textArea) {
+              const content = textArea.value;
+              if (content === '') {
+                textArea.style.height = '';
+              } else {
+                textArea.style.height = 'auto';
+                textArea.style.height = `${textArea.scrollHeight > 100 ? textArea.scrollHeight : '100'}px`;
+              }
+            }
+          }}
           onChange={this.changeContent}
           autoCorrect="off"
           autoCapitalize="off"
@@ -176,7 +201,7 @@ export default class Post extends React.Component {
           <h3 className={styles.author}>{`${post.author.firstName} ${post.author.surname}`}</h3>
         </div>
       );
-      content = <div className={styles.content}>{post.content}</div>;
+      content = <div className={styles.content} dangerouslySetInnerHTML={{__html: post.markdownContent}}></div>;
     }
 
     return post.deleted ? null : (

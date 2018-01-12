@@ -18,6 +18,7 @@ CREATE TABLE Posts (
   modified_at         TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   title               VARCHAR,
   content             VARCHAR,
+  markdown_content    VARCHAR,
   pinned              BOOLEAN NOT NULL DEFAULT FALSE,
   created_by          INTEGER REFERENCES Users ON DELETE CASCADE,
   modified_by         INTEGER REFERENCES Users ON DELETE CASCADE

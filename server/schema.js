@@ -24,6 +24,7 @@ type Post {
   id: ID!
   title: String!
   content: String!
+  markdownContent: String!
   author: User!
   createdAt: String!
   likes: Int!
@@ -94,6 +95,7 @@ const resolvers = {
     id: parentValue => parentValue.id,
     title: parentValue => parentValue.title,
     content: parentValue => parentValue.content,
+    markdownContent: parentValue => parentValue.markdown_content,
     author: parentValue => User.getByID(parentValue.created_by),
     createdAt: parentValue => parentValue.created_at.toISOString(),
     likes: parentValue => parentValue.likes,
