@@ -21,6 +21,7 @@ export default class Home extends React.Component {
   }
 
   async getPosts(sort = this.state.sort) {
+    // TODO: Markdown support.
     const query = `
     query ($sort: String) {
       newsfeed(sort: $sort) {

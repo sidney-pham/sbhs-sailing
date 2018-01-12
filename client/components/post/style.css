@@ -104,3 +104,7 @@
   resize: none;
   overflow: hidden;
 }
+
+.editingTitle:invalid, .editingContent:invalid {
+  border: 1px solid var(--error-red) !important;
+}

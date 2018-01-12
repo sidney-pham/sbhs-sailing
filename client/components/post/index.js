@@ -37,7 +37,8 @@ export default class Post extends React.Component {
     this.setState({ likes, likedByUser });
   }
 
-  async save() {
+  async save(event) {
+    event.preventDefault();
     const query = `
     mutation ($postID: ID!, $title: String!, $content: String!) {
       updatePost(postID: $postID, title: $title, content: $content) {
@@ -58,12 +59,23 @@ export default class Post extends React.Component {
   edit() {
     if (this.state.editing) {
       // Close
-      // Revert to old title and content.
-      this.setState(prevState => ({
-        editing: !prevState.editing,
-        title: prevState.oldTitle,
-        content: prevState.oldContent
-      }));
+      const {
+        title,
+        oldTitle,
+        content,
+        oldContent
+      } = this.state;
+      const changed = (title !== oldTitle) || (content !== oldContent);
+
+      // Make sure no changes are lost.
+      if (!changed || (changed && confirm('Are you sure you want to lose your changes?'))) {
+        // Revert to old title and content.
+        this.setState(prevState => ({
+          editing: !prevState.editing,
+          title: prevState.oldTitle,
+          content: prevState.oldContent
+        }));
+      }
     } else {
       // Edit
       // Store original title and content to revert to if user doesn't want to save.
@@ -170,50 +182,52 @@ export default class Post extends React.Component {
     return post.deleted ? null : (
       <li>
         <article className={classNames(styles.post, { [styles.pinned]: post.pinned })}>
-          {topBar}
-          <div className={styles.info}>
-            <div className={styles.likes}>{`${post.likes} ${post.likes == 1 ? 'like' : 'likes'}`}</div>
-            <time className={styles.date} title={date.format()} dateTime={date.toISOString()}>
-              {date.fromNow()}
-            </time>
-          </div>
-          {content}
-          <ul className={styles.actionsBar}>
-            <li>
-              <button title="Like" onClick={this.like}>
-                <i className={classNames('fa', post.likedByUser ? 'fa-heart' : 'fa-heart-o', { [styles.liked]: post.likedByUser })}></i>
-                {post.likedByUser ? 'Liked' : 'Like'}
-              </button>
-            </li>
-            {post.editing &&
+          <form onSubmit={this.save}>
+            {topBar}
+            <div className={styles.info}>
+              <div className={styles.likes}>{`${post.likes} ${post.likes == 1 ? 'like' : 'likes'}`}</div>
+              <time className={styles.date} title={date.format()} dateTime={date.toISOString()}>
+                {date.fromNow()}
+              </time>
+            </div>
+            {content}
+            <ul className={styles.actionsBar}>
               <li>
-                <button title="Save" onClick={this.save}>
-                  <i className="fa fa-save"></i>
-                  Save
+                <button type="button" title="Like" onClick={this.like}>
+                  <i className={classNames('fa', post.likedByUser ? 'fa-heart' : 'fa-heart-o', { [styles.liked]: post.likedByUser })}></i>
+                  {post.likedByUser ? 'Liked' : 'Like'}
                 </button>
               </li>
-            }
-            <li>
-              <button title="Edit" onClick={this.edit}>
-                <i className={classNames('fa', post.editing ? 'fa-close' : 'fa-pencil')}></i>
-                {post.editing ? 'Close' : 'Edit'}
-              </button>
-            </li>
-            <li>
-              <button title="Delete" onClick={this.delete}>
-                <i className="fa fa-trash"></i>
-                Delete
-              </button>
-            </li>
-            {user.userLevel === 'admin' &&
+              {post.editing &&
+                <li>
+                  <button type="submit" title="Save">
+                    <i className="fa fa-save"></i>
+                    Save
+                  </button>
+                </li>
+              }
               <li>
-                <button title="Pin" onClick={this.pin}>
-                  <i className="fa fa-thumb-tack"></i>
-                  {post.pinned ? 'Unpin' : 'Pin'}
+                <button type="button" title="Edit" onClick={this.edit}>
+                  <i className={classNames('fa', post.editing ? 'fa-close' : 'fa-pencil')}></i>
+                  {post.editing ? 'Close' : 'Edit'}
                 </button>
               </li>
-            }
-          </ul>
+              <li>
+                <button type="button" title="Delete" onClick={this.delete}>
+                  <i className="fa fa-trash"></i>
+                  Delete
+                </button>
+              </li>
+              {user.userLevel === 'admin' &&
+                <li>
+                  <button type="button" title="Pin" onClick={this.pin}>
+                    <i className="fa fa-thumb-tack"></i>
+                    {post.pinned ? 'Unpin' : 'Pin'}
+                  </button>
+                </li>
+              }
+            </ul>
+          </form>
         </article>
       </li>
     );

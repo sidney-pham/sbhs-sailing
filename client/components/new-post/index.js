@@ -112,6 +112,7 @@ export default class NewPost extends React.Component {
 
   async addPost(event) {
     event.preventDefault();
+
     const query = `
     mutation ($title: String!, $content: String!) {
       addPost(title: $title, content: $content) {
@@ -153,7 +154,7 @@ export default class NewPost extends React.Component {
   render() {
     return (
       <section className={styles.newPost}>
-        <form onSubmit={this.addPost} noValidate>
+        <form onSubmit={this.addPost}>
           <div className={styles.topBar}>
             <h2 className={styles.title}>New Post</h2>
             {this.props.newPostOpen &&
@@ -167,6 +168,7 @@ export default class NewPost extends React.Component {
               className={styles.postTitle}
               onChange={this.handleTitle}
               type="text"
+              name="title"
               value={this.state.title}
               placeholder="Title"
               maxLength="100"
@@ -176,6 +178,7 @@ export default class NewPost extends React.Component {
             <textarea
               className={styles.postContent}
               onChange={this.handleContent}
+              name="content"
               value={this.state.content}
               autoCorrect="off"
               autoCapitalize="off"
@@ -183,8 +186,8 @@ export default class NewPost extends React.Component {
               tabIndex="0"
               maxLength="10000"
               placeholder="Content"
+              required
             />
-            <ul className="error-list"></ul> {/* TODO: Make into a component. */}
             <input type="submit" value="Submit" className="smallButton" />
             <button type="button" className="textButton" onClick={this.toggleFormattingHelp}>
               {this.state.formattingHelpOpen ? 'Hide' : 'Formatting Help'}
