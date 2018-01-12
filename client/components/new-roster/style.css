@@ -1,0 +1,83 @@
+@import '../../variables.css';
+
+.newPost {
+  margin-bottom: 50px;
+}
+
+/* Top Bar */
+.topBar {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.title {
+  margin: 0;
+  display: inline-block;
+}
+
+.closeButton {
+  margin-left: auto;
+}
+
+/* Form Input */
+.postTitle {
+  width: 100%;
+  height: 40px;
+  display: block;
+  margin-bottom: 10px;
+  font-size: 18px;
+  padding: 10px;
+}
+
+.postContent {
+  max-width: 100%;
+  width: 100%;
+  height: 40px;
+  font-size: 18px;
+  padding: 10px;
+  margin-bottom: 10px;
+  resize: none;
+  overflow: hidden;
+  transition: height 0.5s cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.postTitle:invalid, .postContent:invalid {
+  border: 1px solid var(--error-red) !important;
+}
+
+/* Formatting Help */
+.formattingHelp {
+  margin-top: 15px;
+  border-top: 1px solid darkgrey;
+  border-bottom: 1px solid darkgrey;
+}
+
+.formattingHelp h1, .formattingHelp h3 {
+  margin: 0;
+}
+
+.formattingHelp blockquote {
+  margin-bottom: 0;
+}
+
+.formattingHelp thead tr {
+  background-color: aliceblue;
+  text-align: center;
+}
+
+.formattingHelpTable {
+  margin-bottom: 30px;
+}
+
+.formattingHelp td, .formattingHelp th {
+  padding: 10px;
+  text-align: center;
+}
+
+:global(blockquote) {
+  margin: 0 0 16px 0;
+  padding: 0 1em;
+  color: #6a737d;
+  border-left: 0.25em solid #dfe2e5
+}

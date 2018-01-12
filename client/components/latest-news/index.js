@@ -11,7 +11,7 @@ export default class LatestNews extends React.Component {
   }
 
   changeSort(event) {
-    window.localStorage.setItem('sort', event.target.value);
+    window.localStorage.setItem('postSort', event.target.value);
     this.props.refreshPosts(event.target.value);
   }
 

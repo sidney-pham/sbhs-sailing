@@ -8,7 +8,7 @@ export default class Home extends React.Component {
     super(props);
     this.state = {
       newPostOpen: false,
-      sort: window.localStorage.getItem('sort') || 'new',
+      sort: window.localStorage.getItem('postSort') || 'new',
       posts: null
     };
     this.toggleNewPostOpen = this.toggleNewPostOpen.bind(this);

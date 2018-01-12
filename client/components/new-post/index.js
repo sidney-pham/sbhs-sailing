@@ -175,6 +175,7 @@ export default class NewPost extends React.Component {
               autoFocus
               required
             />
+            {/* TODO: Make into ResizingTextarea component. */}
             <textarea
               className={styles.postContent}
               onChange={this.handleContent}
@@ -188,7 +189,9 @@ export default class NewPost extends React.Component {
               placeholder="Content"
               required
             />
-            <input type="submit" value="Submit" className="smallButton" />
+            <button type="submit" className="smallButton">
+              <i className="fa fa-check" aria-hidden="true"></i>Submit
+            </button>
             <button type="button" className="textButton" onClick={this.toggleFormattingHelp}>
               {this.state.formattingHelpOpen ? 'Hide' : 'Formatting Help'}
             </button>
