@@ -19,6 +19,14 @@ export default async function queryAPI(query, variables, operationName) {
     window.location.href = response.url;
   } else {
     // All good!
-    return response.json();
+    const data = await response.json();
+
+    // Don't fail silently.
+    if (data.errors) {
+      alert(`Request to API failed. Response data:
+      ${JSON.stringify(data, null, 2)}
+      `);
+    }
+    return data;
   }
 }

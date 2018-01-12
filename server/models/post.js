@@ -29,6 +29,11 @@ class Post {
   }
 
   static async addPost(title, content, userID) {
+    // Form validation.
+    if (!validatePost(title, content)) {
+      return Promise.reject(new Error('Post is not valid.'));
+    }
+
     const query = `INSERT INTO Posts (title, content, created_by) VALUES
       ($1, $2, $3) RETURNING id`;
     const postID = await db.one(query, [title, content, userID]).then(row => row.id);
@@ -65,11 +70,16 @@ class Post {
       // Return post.
       return Post.getPost(postID, userID);
     } else {
-      return Promise.reject(new Error('User not allowed to pin posts.'))
+      return Promise.reject(new Error('User not allowed to pin posts.'));
     }
   }
 
   static async update(postID, userID, title, content) {
+    // Form validation.
+    if (!validatePost(title, content)) {
+      return Promise.reject(new Error('Post is not valid.'));
+    }
+
     const query = `UPDATE Posts SET title = $1, content = $2, modified_by = $3
       WHERE id = $4`;
     await db.none(query, [title, content, userID, postID]);
@@ -99,6 +109,18 @@ class Post {
 
     return deletedPostID;
   }
+}
+
+const maxTitleLength = 100;
+const maxContentLength = 10000;
+
+function validatePost(title, content) {
+  let valid = true;
+  if (title.length > maxTitleLength || content.length > maxContentLength) {
+    valid = false;
+  }
+
+  return valid;
 }
 
 module.exports = Post;
