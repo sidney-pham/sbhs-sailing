@@ -13,6 +13,10 @@ export default class Posts extends React.Component {
       return <p>Loading posts...</p>;
     }
 
+    if (posts.length === 0) {
+      return <p>No posts yet!</p>;
+    }
+
     // Float pinned posts up to the top.
     posts.sort((a, b) => {
       if ((a.pinned && b.pinned) || (!a.pinned && !b.pinned)) {

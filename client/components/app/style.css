@@ -83,6 +83,10 @@ input:not([type="file"]):focus, textarea:focus {
   border: 1px solid black;
 }
 
+input:not([type="file"]):invalid, textarea:invalid {
+  border-left: 3px solid var(--error-red) !important;
+}
+
 /* Logged-in.css */
 .submit-button-small {
   margin-left: 0;
@@ -95,37 +99,6 @@ input:not([type="file"]):focus, textarea:focus {
 table {
   border-collapse: collapse;
   overflow-x: auto;
-}
-
-td, th {
-  padding: 10px;
-  text-align: center;
-}
-
-.new-roster-table {
-  border-collapse: separate;
-  border-spacing: 10px 0;
-  margin: 0 auto 30px;
-}
-
-.new-roster-table td {
-  padding: 0;
-}
-
-.new-roster-table td input {
-  margin: 0;
-  padding: 10px;
-  font-size: 16px;
-  text-align: center;
-  width: 100%;
-}
-
-.new-roster-table, .new-roster-table td, .new-roster-table th {
-  border: 0;
-}
-
-.new-roster-table th {
-  font-weight: normal;
 }
 
 table, td, th {

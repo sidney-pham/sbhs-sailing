@@ -36,10 +36,6 @@
   margin-bottom: 10px;
 }
 
-.postTitle:invalid, .postContent:invalid {
-  border: 1px solid var(--error-red) !important;
-}
-
 /* Formatting Help */
 .formattingHelp {
   margin-top: 15px;

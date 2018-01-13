@@ -1,6 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 import ResizingTextarea from '../resizing-textarea';
+import BoatsInput from '../boats-input';
 import queryAPI from '../../utilities/request';
 import styles from './style.css';
 
@@ -8,11 +9,17 @@ export default class NewRoster extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      title: '',
-      content: ''
+      eventName: '',
+      startDate: '',
+      endDate: '',
+      location: '',
+      details: '',
+      boats: []
     };
     this.confirmBeforeClosing = this.confirmBeforeClosing.bind(this);
     this.addRoster = this.addRoster.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleBoats = this.handleBoats.bind(this);
   }
 
   confirmBeforeClosing(event) {
@@ -50,9 +57,17 @@ export default class NewRoster extends React.Component {
     }
   }
 
+  handleChange(event) {
+    this.setState({ [event.target.name]: event.target.value });
+  }
+
+  handleBoats(event) {
+    this.setState({ boats: [] });
+  }
+
   render() {
-    return (      
-      <section className={styles.newPost}>
+    return (
+      <section className={styles.newRoster}>
         <form onSubmit={this.addRoster}>
           <div className={styles.topBar}>
             <h2 className={styles.title}>New Roster</h2>
@@ -63,39 +78,74 @@ export default class NewRoster extends React.Component {
             }
           </div>
           <div>
-            <input
-              className={styles.postTitle}
-              onChange={this.handleTitle}
-              type="text"
-              name="title"
-              value={this.state.title}
-              placeholder="Title"
-              maxLength="100"
-              autoFocus
-              required
-            />
-            <ResizingTextarea
-              className={styles.postContent}
-              onChange={this.handleContent}
-              name="content"
-              value={this.state.content}
-              maxLength="10000"
-              placeholder="Content"
-              required
-            />
-            <button type="submit" className="smallButton">
+            <label>
+              Event Name
+              <input
+                className={styles.input}
+                onChange={this.handleChange}
+                type="text"
+                name="eventName"
+                value={this.state.eventName}
+                placeholder="Required"
+                maxLength="100"
+                required
+              />
+            </label>
+            <label>
+              Start Date
+              <input
+                className={styles.input}
+                onChange={this.handleChange}
+                type="date"
+                pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"
+                name="startDate"
+                value={this.state.startDate}
+                placeholder="Required (yyyy-mm-dd)"
+                maxLength="100"
+                required
+              />
+            </label>
+            <label>
+              End Date
+              <input
+                className={styles.input}
+                onChange={this.handleChange}
+                type="date"
+                pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"
+                name="endDate"
+                value={this.state.endDate}
+                placeholder="(yyyy-mm-dd)"
+                maxLength="100"
+              />
+            </label>
+            <label>
+              Location
+              <input
+                className={styles.input}
+                onChange={this.handleChange}
+                type="text"
+                name="location"
+                value={this.state.location}
+                placeholder="Required"
+                maxLength="100"
+                required
+              />
+            </label>
+            <label>
+              Details
+              <ResizingTextarea
+                className={styles.textarea}
+                onChange={this.handleChange}
+                name="details"
+                value={this.state.details}
+                maxLength="10000"
+                required
+              />
+            </label>
+            <BoatsInput handleBoats={this.handleBoats} />
+            <button type="submit" className={classNames('smallButton', styles.submitButton)}>
               <i className="fa fa-check" aria-hidden="true"></i>Submit
             </button>
-            <button type="button" className="textButton" onClick={this.toggleFormattingHelp}>
-              {this.state.formattingHelpOpen ? 'Hide' : 'Formatting Help'}
-            </button>
-            { this.state.formattingHelpOpen &&
-              <div className={styles.formattingHelp}>
-                <p>You can use Github-flavoured <a href="http://daringfireball.net/projects/markdown/syntax">Markdown</a> for formatting. See below for some basics, or use <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">the Markdown Cheatsheet</a> for a quick and easy reference.</p>
-                <p>Note: Use two newlines for a new paragraph.</p>
-                <FormattingTable />
-              </div>
-            }
           </div>
         </form>
       </section>

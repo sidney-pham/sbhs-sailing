@@ -161,7 +161,6 @@ export default class NewPost extends React.Component {
               className={styles.postTitle}
               onChange={this.handleTitle}
               type="text"
-              name="title"
               value={this.state.title}
               placeholder="Title"
               maxLength="100"
@@ -171,7 +170,6 @@ export default class NewPost extends React.Component {
             <ResizingTextarea
               className={styles.postContent}
               onChange={this.handleContent}
-              name="content"
               value={this.state.content}
               maxLength="10000"
               placeholder="Content"

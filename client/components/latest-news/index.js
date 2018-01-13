@@ -41,7 +41,7 @@ export default class LatestNews extends React.Component {
             </button>
           }
         </div>
-        <Posts user={user} posts={posts} refreshPosts={refreshPosts}/>
+        <Posts user={user} posts={posts} refreshPosts={refreshPosts} />
       </section>
     );
   }

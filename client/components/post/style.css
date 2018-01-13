@@ -100,7 +100,3 @@
   height: 100px;
   font-size: 18px;
 }
-
-.editingTitle:invalid, .editingContent:invalid {
-  border: 1px solid var(--error-red) !important;
-}
