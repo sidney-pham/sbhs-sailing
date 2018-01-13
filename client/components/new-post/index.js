@@ -1,5 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
+import ResizingTextarea from '../resizing-textarea';
 import queryAPI from '../../utilities/request';
 import styles from './style.css';
 
@@ -140,15 +141,7 @@ export default class NewPost extends React.Component {
   }
 
   handleContent(event) {
-    const textArea = event.target;
-    const content = textArea.value;
-    if (content === '') {
-      textArea.style.height = '';
-    } else {
-      textArea.style.height = 'auto';
-      textArea.style.height = `${textArea.scrollHeight > 100 ? textArea.scrollHeight : '100'}px`;
-    }
-    this.setState({ content });
+    this.setState({ content: event.target.value });
   }
 
   render() {
@@ -175,16 +168,11 @@ export default class NewPost extends React.Component {
               autoFocus
               required
             />
-            {/* TODO: Make into ResizingTextarea component. */}
-            <textarea
+            <ResizingTextarea
               className={styles.postContent}
               onChange={this.handleContent}
               name="content"
               value={this.state.content}
-              autoCorrect="off"
-              autoCapitalize="off"
-              spellCheck="false"
-              tabIndex="0"
               maxLength="10000"
               placeholder="Content"
               required

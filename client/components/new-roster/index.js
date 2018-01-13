@@ -1,5 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
+import ResizingTextarea from '../resizing-textarea';
 import queryAPI from '../../utilities/request';
 import styles from './style.css';
 
@@ -73,15 +74,11 @@ export default class NewRoster extends React.Component {
               autoFocus
               required
             />
-            <textarea
+            <ResizingTextarea
               className={styles.postContent}
               onChange={this.handleContent}
               name="content"
               value={this.state.content}
-              autoCorrect="off"
-              autoCapitalize="off"
-              spellCheck="false"
-              tabIndex="0"
               maxLength="10000"
               placeholder="Content"
               required

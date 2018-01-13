@@ -1,6 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 import moment from 'moment';
+import ResizingTextarea from '../resizing-textarea';
 import queryAPI from '../../utilities/request';
 import styles from './style.css';
 
@@ -128,15 +129,7 @@ export default class Post extends React.Component {
   }
 
   changeContent(event) {
-    const textArea = event.target;
-    const content = textArea.value;
-    if (content === '') {
-      textArea.style.height = '';
-    } else {
-      textArea.style.height = 'auto';
-      textArea.style.height = `${textArea.scrollHeight > 100 ? textArea.scrollHeight : '100'}px`;
-    }
-    this.setState({ content: textArea.value });
+    this.setState({ content: event.target.value });
   }
 
   render() {
@@ -159,30 +152,10 @@ export default class Post extends React.Component {
         />
       );
       content = (
-        <textarea
+        <ResizingTextarea
           className={styles.editingContent}
           value={post.content}
-          // We need to resize the textArea on mounting so the text doesn't overflow.
-          // We're basically doing everything in this.changeContent except it doesn't work if
-          // we just call that here for some reason.
-          // `if (textArea)` is required because ref gets called with null on unmount.
-          // See: https://reactjs.org/docs/refs-and-the-dom.html.
-          ref={textArea => {
-            if (textArea) {
-              const content = textArea.value;
-              if (content === '') {
-                textArea.style.height = '';
-              } else {
-                textArea.style.height = 'auto';
-                textArea.style.height = `${textArea.scrollHeight > 100 ? textArea.scrollHeight : '100'}px`;
-              }
-            }
-          }}
           onChange={this.changeContent}
-          autoCorrect="off"
-          autoCapitalize="off"
-          spellCheck="false"
-          tabIndex="0"
           maxLength="10000"
           placeholder="Content"
           autoFocus
