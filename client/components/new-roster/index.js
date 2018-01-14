@@ -83,13 +83,13 @@ export default class NewRoster extends React.Component {
 
   changeNumberOfBoats(event) {
     const input = event.target;
-    let numBoats = input.value;
+    let numBoats = input.value || 0;
 
     // TODO: Double check all setStates don't reference this.state or this.props;
     this.setState(prevState => {
       // Add more boats.
       if (numBoats > prevState.boats.length) {
-        // Make sure very large user-typed numbers aren't valid. 
+        // Make sure very large user-typed numbers aren't valid.
         numBoats = Math.min(this.maxBoats, numBoats);
 
         // Add empty boats until boats contains numBoats boats.
@@ -112,7 +112,7 @@ export default class NewRoster extends React.Component {
         // Find the bottom-most row of boats that isn't empty.
         let lastFilledInRow = 0;
         for (let [rowIndex, row] of [...prevState.boats].reverse().entries()) {
-          rowIndex = prevState.boats.length - 1 - rowIndex;
+          rowIndex = prevState.boats.length - rowIndex;
           if (row.skipper !== '' || row.crew !== '' || row.boat !== '' || row.sailNumber !== '') {
             lastFilledInRow = rowIndex;
             break;
@@ -120,8 +120,8 @@ export default class NewRoster extends React.Component {
         }
 
         return {
-          // Return 1 or more rows of boats.
-          boats: prevState.boats.slice(0, Math.max(1, lastFilledInRow + 1, numBoats))
+          // Return 0 or more rows of boats.
+          boats: prevState.boats.slice(0, Math.max(0, lastFilledInRow, numBoats))
         };
       }
     });
@@ -211,7 +211,7 @@ export default class NewRoster extends React.Component {
                 onChange={this.changeNumberOfBoats}
                 type="number"
                 name="numberOfBoats"
-                value={this.state.boats.length}
+                value={this.state.boats.length === 0 ? '' : this.state.boats.length}
                 placeholder="Required"
                 min="1"
                 max={this.maxBoats.toString()}
