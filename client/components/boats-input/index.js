@@ -1,4 +1,5 @@
 import React from 'react';
+import BoatRow from '../boat-row';
 import styles from './style.css';
 
 export default class BoatsInput extends React.Component {
@@ -21,12 +22,16 @@ export default class BoatsInput extends React.Component {
             </tr>
           </thead>
           <tbody className={styles.body}>
-            <tr>
-              <td><input type="text" placeholder="Required" required /></td>
-              <td><input type="text" placeholder="Required" required /></td>
-              <td><input type="text" placeholder="Required" required /></td>
-              <td><input type="text" placeholder="Required" required /></td>
-            </tr>
+            {
+              this.props.boats.map((boat, i) => (
+                <BoatRow
+                  key={i.toString()}
+                  rowIndex={i}
+                  boat={boat}
+                  handleBoats={this.props.handleBoats}
+                />
+              ))
+            }
           </tbody>
         </table>
       </div>

@@ -8,18 +8,28 @@ import styles from './style.css';
 export default class NewRoster extends React.Component {
   constructor(props) {
     super(props);
+    this.maxBoats = 20;
     this.state = {
       eventName: '',
       startDate: '',
       endDate: '',
       location: '',
       details: '',
-      boats: []
+      boats: [
+        {
+          row: 0,
+          skipper: '',
+          crew: '',
+          boat: '',
+          sailNumber: ''
+        }
+      ]
     };
     this.confirmBeforeClosing = this.confirmBeforeClosing.bind(this);
     this.addRoster = this.addRoster.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleBoats = this.handleBoats.bind(this);
+    this.changeNumberOfBoats = this.changeNumberOfBoats.bind(this);
   }
 
   confirmBeforeClosing(event) {
@@ -61,8 +71,60 @@ export default class NewRoster extends React.Component {
     this.setState({ [event.target.name]: event.target.value });
   }
 
-  handleBoats(event) {
-    this.setState({ boats: [] });
+  handleBoats(rowIndex, newBoat) {
+    this.setState(prevState => {
+      const newBoats = prevState.boats;
+      newBoats[rowIndex] = newBoat;
+      return {
+        boats: newBoats
+      };
+    });
+  }
+
+  changeNumberOfBoats(event) {
+    const input = event.target;
+    let numBoats = input.value;
+
+    // TODO: Double check all setStates don't reference this.state or this.props;
+    this.setState(prevState => {
+      // Add more boats.
+      if (numBoats > prevState.boats.length) {
+        // Make sure very large user-typed numbers aren't valid. 
+        numBoats = Math.min(this.maxBoats, numBoats);
+
+        // Add empty boats until boats contains numBoats boats.
+        const newBoats = [];
+        for (let i = prevState.boats.length; i < numBoats; i++) {
+          newBoats.push({
+            row: i,
+            skipper: '',
+            crew: '',
+            boat: '',
+            sailNumber: ''
+          });
+        }
+
+        return {
+          boats: [...prevState.boats, ...newBoats]
+        };
+      } else {
+        // Only let the user remove empty rows of boats.
+        // Find the bottom-most row of boats that isn't empty.
+        let lastFilledInRow = 0;
+        for (let [rowIndex, row] of [...prevState.boats].reverse().entries()) {
+          rowIndex = prevState.boats.length - 1 - rowIndex;
+          if (row.skipper !== '' || row.crew !== '' || row.boat !== '' || row.sailNumber !== '') {
+            lastFilledInRow = rowIndex;
+            break;
+          }
+        }
+
+        return {
+          // Return 1 or more rows of boats.
+          boats: prevState.boats.slice(0, Math.max(1, lastFilledInRow + 1, numBoats))
+        };
+      }
+    });
   }
 
   render() {
@@ -142,7 +204,24 @@ export default class NewRoster extends React.Component {
                 required
               />
             </label>
-            <BoatsInput handleBoats={this.handleBoats} />
+            <label>
+              Number of boats
+              <input
+                className={styles.input}
+                onChange={this.changeNumberOfBoats}
+                type="number"
+                name="numberOfBoats"
+                value={this.state.boats.length}
+                placeholder="Required"
+                min="1"
+                max={this.maxBoats.toString()}
+                required
+              />
+            </label>
+            <BoatsInput
+              handleBoats={this.handleBoats}
+              boats={this.state.boats}
+            />
             <button type="submit" className={classNames('smallButton', styles.submitButton)}>
               <i className="fa fa-check" aria-hidden="true"></i>Submit
             </button>
