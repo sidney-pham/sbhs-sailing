@@ -30,6 +30,31 @@ CREATE TABLE Likes (
   UNIQUE (post_id, user_id)
 );
 
+CREATE TABLE Events (
+  id            SERIAL PRIMARY KEY,
+  location      VARCHAR,
+  start_date    TIMESTAMP WITH TIME ZONE,
+  end_date      TIMESTAMP WITH TIME ZONE,
+  event_name    VARCHAR,
+  other_details VARCHAR
+);
+
+CREATE TABLE Boats (
+  id            SERIAL PRIMARY KEY,
+  boat_name     VARCHAR,
+  sail_number   VARCHAR,
+  skipper       VARCHAR,
+  crew          VARCHAR,
+  race_results  INTEGER[], -- Position in each race throughout the event. E.g., [1, 4, 2, 3]
+  overall       INTEGER -- Overall placing for that event.
+);
+
+CREATE TABLE Event_Boats (
+  event_id      INTEGER REFERENCES Events ON DELETE CASCADE,
+  boat_id       INTEGER REFERENCES Boats ON DELETE CASCADE,
+  UNIQUE (event_id, boat_id)
+);
+
 -- I'm too lazy to do this in psql.
 INSERT INTO Users (first_name, surname, student_id, user_level, email, password)
   VALUES ('Sidney', 'Pham', '433986989', 'admin', 'sidneypham@gmail.com', 'test123');

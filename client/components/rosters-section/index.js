@@ -1,6 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
-import Posts from '../posts';
+import RostersList from '../rosters-list';
 import styles from './style.css';
 
 export default class RostersSection extends React.Component {
@@ -12,25 +12,34 @@ export default class RostersSection extends React.Component {
 
   changeSort(event) {
     window.localStorage.setItem('rosterSort', event.target.value);
-    // this.props.refreshPosts(event.target.value);
+    this.props.refreshRosters(event.target.value);
   }
 
   render() {
     const {
       user,
+      rosters,
       newRosterOpen,
       toggleNewRosterOpen,
-      sort
+      showPastEvents,
+      togglePastEvents,
+      sort,
+      refreshRosters
     } = this.props;
+
     return (
       <section>
         <div className={styles.topBar}>
           <h2 className={styles.title}>Rosters/Events</h2>
           <label className={styles.sortLabel}>Sort By:
             <select value={sort} onChange={this.changeSort}>
-              <option value="new">Date (earliest - latest)</option>
-              <option value="old">Date (latest - earliest)</option>
+              <option value="earliest">Date (earliest - latest)</option>
+              <option value="latest">Date (latest - earliest)</option>
             </select>
+          </label>
+          <label className={styles.showPastEventsLabel}>
+            Show past events:
+            <input type="checkbox" checked={showPastEvents} onChange={togglePastEvents} />
           </label>
           {!newRosterOpen &&
             <button type="button" onClick={toggleNewRosterOpen} className={classNames('smallButton', styles.newRosterButton)}>
@@ -38,7 +47,12 @@ export default class RostersSection extends React.Component {
             </button>
           }
         </div>
-        {/* <Posts user={user} posts={posts} refreshPosts={refreshPosts}/> */}
+        <RostersList
+          user={user}
+          rosters={rosters}
+          refreshRosters={refreshRosters}
+          showPastEvents={showPastEvents}
+        />
       </section>
     );
   }

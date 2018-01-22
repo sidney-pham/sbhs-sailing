@@ -9,6 +9,10 @@
   margin-left: 20px;
 }
 
+.showPastEventsLabel {
+  margin-left: 20px;
+}
+
 .topBar {
   display: flex;
   align-items: flex-end;

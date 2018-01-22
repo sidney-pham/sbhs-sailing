@@ -115,15 +115,17 @@ export default class NewPost extends React.Component {
     event.preventDefault();
 
     const query = `
-    mutation ($title: String!, $content: String!) {
-      addPost(title: $title, content: $content) {
+    mutation ($post: PostInput!) {
+      addPost(post: $post) {
         id
       }
     }
     `;
     const variables = {
-      title: this.state.title,
-      content: this.state.content
+      post: {
+        title: this.state.title,
+        content: this.state.content
+      }
     };
     const submitted = await queryAPI(query, variables).then(data => data.data.addPost.id);
     if (submitted) {

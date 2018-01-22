@@ -41,8 +41,8 @@ export default class Post extends React.Component {
   async save(event) {
     event.preventDefault();
     const query = `
-    mutation ($postID: ID!, $title: String!, $content: String!) {
-      updatePost(postID: $postID, title: $title, content: $content) {
+    mutation ($postID: ID!, $post: PostInput!) {
+      updatePost(postID: $postID, post: $post) {
         title
         content
         markdownContent
@@ -51,8 +51,10 @@ export default class Post extends React.Component {
     `;
     const variables = {
       postID: this.state.id,
-      title: this.state.title,
-      content: this.state.content
+      post: {
+        title: this.state.title,
+        content: this.state.content
+      }
     };
     const { title, content, markdownContent } = await queryAPI(query, variables).then(data => data.data.updatePost);
     this.setState({ title, content, markdownContent, editing: false });

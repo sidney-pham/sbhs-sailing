@@ -13,14 +13,14 @@ marked.setOptions({
 });
 
 class Post {
-  static async getPost(postID, userID) {
+  static async get(postID, userID) {
     const query = `SELECT *, (SELECT Count(*) FROM Likes WHERE Likes.post_id = p.id) AS likes,
       (EXISTS (SELECT * FROM Likes WHERE Likes.post_id = p.id AND Likes.user_id = $1)) AS user_liked
       FROM Posts AS p WHERE p.id = $2`;
     return db.one(query, [userID, postID]);
   }
 
-  static async getPosts(userID, sort) {
+  static async getAll(userID, sort) {
     const query = `SELECT *, (SELECT Count(*) FROM Likes WHERE Likes.post_id = p.id) AS likes,
       (EXISTS (SELECT * FROM Likes WHERE Likes.post_id = p.id AND Likes.user_id = $1)) AS user_liked
       FROM Posts AS p`;
@@ -40,7 +40,7 @@ class Post {
     return posts;
   }
 
-  static async addPost(title, content, userID) {
+  static async add(title, content, userID) {
     // Form validation.
     if (!validatePost(title, content)) {
       return Promise.reject(new Error('Post is not valid.'));
@@ -51,7 +51,7 @@ class Post {
     const postID = await db.one(query, [title, content, marked(content), userID]).then(row => row.id);
 
     // Return post.
-    return Post.getPost(postID, userID);
+    return Post.get(postID, userID);
   }
 
   static async like(postID, userID) {
@@ -68,7 +68,7 @@ class Post {
     await db.none(query, [postID, userID]);
 
     // Return post.
-    return Post.getPost(postID, userID);
+    return Post.get(postID, userID);
   }
 
   static async pin(postID, userID) {
@@ -80,7 +80,7 @@ class Post {
       await db.none(query, postID);
 
       // Return post.
-      return Post.getPost(postID, userID);
+      return Post.get(postID, userID);
     } else {
       return Promise.reject(new Error('User not allowed to pin posts.'));
     }
@@ -97,7 +97,7 @@ class Post {
     await db.none(query, [title, content, marked(content), userID, postID]);
 
     // Return post.
-    return Post.getPost(postID, userID);
+    return Post.get(postID, userID);
   }
 
   static async delete(postID, userID) {

@@ -46,24 +46,62 @@ export default class NewRoster extends React.Component {
     event.preventDefault();
 
     const query = `
-    mutation ($title: String!, $content: String!) {
-      addPost(title: $title, content: $content) {
+    mutation ($event: EventInput!) {
+      addEvent(event: $event) {
         id
+        eventName
+        startDate
+        endDate
+        location
+        details
+        boats {
+          id
+          boat
+          skipper
+          crew
+          sailNumber
+        }
       }
     }
     `;
+
+    // Don't use row field in this.state.boats.
+    const boats = this.state.boats.map(boat => {
+      console.log(boat);
+      const { row, ...newBoat } = boat;
+      return newBoat;
+    });
+    console.log(boats);
     const variables = {
-      title: this.state.title,
-      content: this.state.content
+      event: {
+        eventName: this.state.eventName,
+        startDate: this.state.startDate,
+        endDate: this.state.endDate,
+        location: this.state.location,
+        details: this.state.details,
+        boats
+      }
     };
-    const submitted = await queryAPI(query, variables).then(data => data.data.addPost.id);
+    const submitted = await queryAPI(query, variables).then(data => data.data.addEvent.id);
     if (submitted) {
       this.setState({
-        title: '',
-        content: ''
+        eventName: '',
+        startDate: '',
+        endDate: '',
+        location: '',
+        details: '',
+        boats: [
+          {
+            row: 0,
+            skipper: '',
+            crew: '',
+            boat: '',
+            sailNumber: ''
+          }
+        ]
       });
-      this.props.refreshPosts();
-      this.props.toggleNewPostOpen();
+      this.props.refreshRosters();
+      this.props.toggleNewRosterOpen();
     }
   }
 
@@ -201,7 +239,6 @@ export default class NewRoster extends React.Component {
                 name="details"
                 value={this.state.details}
                 maxLength="10000"
-                required
               />
             </label>
             <label>

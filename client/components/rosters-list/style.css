@@ -1,0 +1,11 @@
+@import '../../variables.css';
+
+.rostersList {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.rostersList li:last-child article {
+  margin-bottom: 0;
+}
