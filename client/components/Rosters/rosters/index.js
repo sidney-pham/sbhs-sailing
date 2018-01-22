@@ -1,5 +1,5 @@
 import React from 'react';
-import queryAPI from '../../utilities/request';
+import queryAPI from '../../../utilities/request';
 import NewRoster from '../new-roster';
 import RostersSection from '../rosters-section';
 
@@ -60,14 +60,19 @@ export default class Rosters extends React.Component {
   render() {
     // const { newPostOpen, sort, posts } = this.state;
     const { user } = this.props;
-    const { newRosterOpen, showPastEvents, sort, rosters } = this.state;
+    const {
+      newRosterOpen,
+      showPastEvents,
+      sort,
+      rosters
+    } = this.state;
     return (
       <main>
         {this.state.newRosterOpen &&
           <NewRoster
             newRosterOpen={newRosterOpen}
             toggleNewRosterOpen={this.toggleNewRosterOpen}
-            refreshRosters={this.getRosters}  
+            refreshRosters={this.getRosters}
           />
         }
         <RostersSection

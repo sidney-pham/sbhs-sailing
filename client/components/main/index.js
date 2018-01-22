@@ -1,8 +1,8 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-import Home from '../home';
-import Rosters from '../rosters';
-import Results from '../results';
+import Home from '../Home/home';
+import Rosters from '../Rosters/rosters';
+import Results from '../Results/results';
 import './style.css';
 
 export default class Main extends React.Component {

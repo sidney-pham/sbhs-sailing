@@ -46,7 +46,7 @@ export default class ResizingTextarea extends React.Component {
         spellCheck="false"
         tabIndex="0"
         ref={textArea => {
-          this.textArea = textArea
+          this.textArea = textArea;
         }}
         onChange={this.handleChange}
       />

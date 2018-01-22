@@ -20,7 +20,7 @@ class App extends React.Component {
   componentWillMount() {
     this.getUserData();
   }
-  
+
   async getUserData() {
     const query = `
     query {

@@ -1,8 +1,8 @@
 import React from 'react';
 import classNames from 'classnames';
-import ResizingTextarea from '../resizing-textarea';
+import ResizingTextarea from '../../resizing-textarea';
 import BoatsInput from '../boats-input';
-import queryAPI from '../../utilities/request';
+import queryAPI from '../../../utilities/request';
 import styles from './style.css';
 
 export default class NewRoster extends React.Component {

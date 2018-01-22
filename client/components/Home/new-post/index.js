@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
-import ResizingTextarea from '../resizing-textarea';
-import queryAPI from '../../utilities/request';
+import ResizingTextarea from '../../resizing-textarea';
+import queryAPI from '../../../utilities/request';
 import styles from './style.css';
 
 function FormattingTable() {

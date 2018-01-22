@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import queryAPI from '../../utilities/request';
+import queryAPI from '../../../utilities/request';
 import styles from './style.css';
 
 export default class Post extends React.Component {

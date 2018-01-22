@@ -1,5 +1,5 @@
 import React from 'react';
-import queryAPI from '../../utilities/request';
+import queryAPI from '../../../utilities/request';
 import NewPost from '../new-post';
 import LatestNews from '../latest-news';
 

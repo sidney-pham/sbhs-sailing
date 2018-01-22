@@ -1,8 +1,8 @@
 import React from 'react';
 import classNames from 'classnames';
 import moment from 'moment';
-import ResizingTextarea from '../resizing-textarea';
-import queryAPI from '../../utilities/request';
+import ResizingTextarea from '../../resizing-textarea';
+import queryAPI from '../../../utilities/request';
 import styles from './style.css';
 
 export default class Post extends React.Component {
@@ -57,7 +57,12 @@ export default class Post extends React.Component {
       }
     };
     const { title, content, markdownContent } = await queryAPI(query, variables).then(data => data.data.updatePost);
-    this.setState({ title, content, markdownContent, editing: false });
+    this.setState({
+      editing: false,
+      title,
+      content,
+      markdownContent
+    });
   }
 
   edit() {
@@ -72,7 +77,7 @@ export default class Post extends React.Component {
       const changed = (title !== oldTitle) || (content !== oldContent);
 
       // Make sure no changes are lost.
-      if (!changed || (changed && confirm('Are you sure you want to lose your changes?'))) {
+      if (!changed || (changed && window.confirm('Are you sure you want to lose your changes?'))) {
         // Revert to old title and content.
         this.setState(prevState => ({
           editing: !prevState.editing,
@@ -176,7 +181,7 @@ export default class Post extends React.Component {
           <h3 className={styles.author}>{`${post.author.firstName} ${post.author.surname}`}</h3>
         </div>
       );
-      content = <div className={styles.content} dangerouslySetInnerHTML={{__html: post.markdownContent}}></div>;
+      content = <div className={styles.content} dangerouslySetInnerHTML={{ __html: post.markdownContent }}></div>;
     }
 
     return post.deleted ? null : (
