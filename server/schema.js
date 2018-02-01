@@ -2,6 +2,7 @@ const { makeExecutableSchema } = require('graphql-tools');
 const User = require('./models/user');
 const Post = require('./models/post');
 const Roster = require('./models/roster');
+const Result = require('./models/result');
 
 const typeDefs = `
 type Query {
@@ -9,6 +10,7 @@ type Query {
   user(id: ID!): User
   newsfeed(sort: String): [Post]!
   events(sort: String): [Event]!
+  results(sort: String): [Event]!
 }
 
 type User {
@@ -49,6 +51,8 @@ type Boat {
   crew: String!
   boat: String!
   sailNumber: String!
+  raceResults: [Int]
+  overall: Int
 }
 
 input PostInput {
@@ -72,6 +76,16 @@ input BoatInput {
   sailNumber: String!
 }
 
+input ResultInput {
+  boats: [BoatResultInput]!
+}
+
+input BoatResultInput {
+  id: ID!
+  raceResults: [Int]!
+  overall: Int!
+}
+
 type Mutation {
   addPost(post: PostInput!): Post
   likePost(postID: ID!): Post
@@ -81,6 +95,8 @@ type Mutation {
   addEvent(event: EventInput!): Event
   updateEvent(eventID: ID!, event: EventInput!): Event
   deleteEvent(eventID: ID!): ID
+  updateResult(eventID: ID!, result: ResultInput!): Event
+  deleteResult(eventID: ID!): Event
 }
 
 schema {
@@ -99,7 +115,8 @@ const resolvers = {
     },
     user: (_parentValue, { id }) => User.getByID(id),
     newsfeed: (_parentValue, { sort }, req) => Post.getAll(req.session.userID, sort),
-    events: (_parentValue, { sort }) => Roster.getAll(sort)
+    events: (_parentValue, { sort }) => Roster.getAll(sort),
+    results: (_parentValue, { sort }) => Result.getAll(sort)
   },
   Mutation: {
     addPost: (_parentValue, { post: { title, content } }, req) => (
@@ -131,8 +148,10 @@ const resolvers = {
         details,
         boats
       }
-    }, req) => Roster.add(eventID, eventName, startDate, endDate, location, details, boats, req.session.userID),
-    deleteEvent: (_parentValue, { eventID }, req) => Roster.delete(eventID, req.session.userID)
+    }, req) => Roster.update(eventID, eventName, startDate, endDate, location, details, boats, req.session.userID),
+    deleteEvent: (_parentValue, { eventID }, req) => Roster.delete(eventID, req.session.userID),
+    updateResult: (_parentValue, { eventID, result: { boats } }, req) => Result.update(eventID, boats, req.session.userID),
+    deleteResult: (_parentValue, { eventID }, req) => Result.delete(eventID, req.session.userID)
   },
   User: {
     firstName: parentValue => parentValue.first_name,
@@ -156,8 +175,10 @@ const resolvers = {
   },
   Event: {
     eventName: parentValue => parentValue.event_name,
-    startDate: parentValue => parentValue.start_date,
-    endDate: parentValue => parentValue.end_date,
+    startDate: parentValue => parentValue.start_date.toISOString(),
+    endDate: parentValue => (
+      parentValue.end_date ? parentValue.end_date.toISOString() : parentValue.end_date
+    ),
     location: parentValue => parentValue.location,
     details: parentValue => parentValue.other_details,
     boats: parentValue => parentValue.boats
@@ -166,7 +187,9 @@ const resolvers = {
     skipper: parentValue => parentValue.skipper,
     crew: parentValue => parentValue.crew,
     boat: parentValue => parentValue.boat_name,
-    sailNumber: parentValue => parentValue.sail_number
+    sailNumber: parentValue => parentValue.sail_number,
+    raceResults: parentValue => parentValue.race_results,
+    overall: parentValue => parentValue.overall
   }
 };
 

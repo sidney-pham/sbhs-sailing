@@ -3,7 +3,7 @@ import moment from 'moment';
 import queryAPI from '../../../utilities/request';
 import styles from './style.css';
 
-export default class Post extends React.Component {
+export default class Roster extends React.Component {
   constructor(props) {
     super(props);
     this.state = {

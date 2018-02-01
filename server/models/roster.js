@@ -150,6 +150,11 @@ const maxOtherLength = 1000;
 
 function validateEvent(eventName, startDate, endDate, location, details, boats) {
   let valid = true;
+
+  if (!eventName || !startDate || !location || !boats) {
+    valid = false;
+  }
+  
   if (eventName.length > maxOtherLength || startDate.length > maxOtherLength ||
       endDate.length > maxOtherLength || location.length > maxOtherLength ||
       details.length > maxDetailsLength || boats.length > maxBoats) {

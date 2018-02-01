@@ -1,0 +1,87 @@
+@import '../../../variables.css';
+
+.result {
+  background-color: aliceblue;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.eventName {
+  font-size: 24px;
+  margin: 0;
+}
+
+.date, .location {
+  margin: 0;
+  font-size: 16px;
+  font-weight: normal;
+}
+
+.boatsTable td, .boatsTable th {
+  padding: 10px;
+  text-align: center;
+}
+
+.actionsBar {
+  list-style-type: none;
+  padding: 0;
+  margin: 10px 0 0;
+}
+
+.actionsBar li {
+  display: inline-block;
+  margin-right: 0.5em;
+}
+
+.actionsBar button {
+  border: 0;
+  font-size: 16px;
+  color: black;
+  text-decoration: none;
+  padding: 8px 15px;
+  background-color: white;
+}
+
+.actionsBar button:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.edit {
+  padding: 10px 10px 10px 0;
+}
+
+.raceScores, .overall {
+  height: 40px;
+  padding: 5px;
+  font-size: 14px;
+}
+
+.raceScores {
+  margin-right: 5px;
+  width: 300px;
+  vertical-align: top;
+}
+
+.overall {
+  width: 120px;
+}
+
+.editBoat {
+  width: 200px;
+  display: inline-block;
+}
+
+.editBoatsHeader {
+  margin: 0 0 10px;
+}
+
+.editList {
+  list-style-type: none;
+  margin: 5px 0 0;
+  padding: 0;
+}
+
+.editList li {
+  margin-bottom: 2px;
+}

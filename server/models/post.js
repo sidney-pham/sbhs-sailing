@@ -128,6 +128,11 @@ const maxContentLength = 10000;
 
 function validatePost(title, content) {
   let valid = true;
+
+  if (!title || !content) {
+    valid = false;
+  }
+
   if (title.length > maxTitleLength || content.length > maxContentLength) {
     valid = false;
   }

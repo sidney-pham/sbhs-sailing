@@ -1,0 +1,11 @@
+@import '../../../variables.css';
+
+.resultsList {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.resultsList li:last-child article {
+  margin-bottom: 0;
+}
