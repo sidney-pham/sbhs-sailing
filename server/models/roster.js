@@ -161,6 +161,9 @@ function validateEvent(eventName, startDate, endDate, location, details, boats) 
     valid = false;
   }
 
+  // TODO: Enforce endDate > startDate. First need to enforce date format. Right
+  // now, we're relying on Postgres to parse dates and if not throw an error.
+
   return valid;
 }
 

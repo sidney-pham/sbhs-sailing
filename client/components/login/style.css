@@ -1,0 +1,166 @@
+@import '../../variables.css';
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Lato', sans-serif;
+}
+
+main {
+  margin: 30px auto;
+  padding: 80px;
+  background-color: white;
+}
+
+.header {
+  background-color: var(--main-blue);
+  display: flex;
+  align-items: center;
+  padding: 0 30px;
+}
+
+.SBHSCrest {
+  height: 60px;
+  margin: 10px 30px 10px 0;
+}
+
+.title {
+  font-size: 35px;
+  color: white;
+  margin: 0;
+}
+
+.loginTitle {
+  font-size: 50px;
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 40px;
+}
+
+.textButton {
+  border: 0;
+  background-color: initial;
+  font-size: 18px;
+  text-decoration: underline;
+}
+
+.textButton > i {
+  text-decoration: none;
+}
+
+.textButton:hover {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+/* Transition adapted from http://ianlunn.github.io/Hover/ */
+/* To use, add another class specifying width, height, font-size and anything else.*/
+.trimButton {
+  color: var(--main-blue);
+  background-color: white;
+  display: block;
+  transform: perspective(1px) translateZ(0);
+  box-shadow: 0 0 1px transparent;
+  transition: background-color 0.3s, color 0.3s;
+  box-shadow: inset 0 0 0 2px var(--main-blue), 0 0 1px transparent;
+}
+
+.trimButton:hover {
+  background-color: var(--main-blue);
+  color: white;
+  cursor: pointer;
+}
+
+.SBHSButton {
+  width: 60%;
+  height: 60px;
+  border: 0;
+  font-size: 25px;
+  margin: 0 auto 30px;
+}
+
+.SBHSButton a {
+  text-decoration: none;
+  color: inherit;
+}
+
+:global(.fa) {
+  margin-right: 0.5em;
+}
+
+.nonSBHSButton {
+  display: block;
+  margin: 0 auto;
+}
+
+.nonSBHSLogin {
+  width: 60%;
+  margin: 0 auto;
+}
+
+/* Set standard border color of textboxes and remove outlines. */
+input:not([type="file"]), textarea {
+  border: 1px solid darkgrey;
+  outline: 0;
+}
+
+input:not([type="file"]):focus, textarea:focus {
+  border: 1px solid black;
+}
+
+.nonSBHSLogin input {
+  font-size: 20px;
+  display: block;
+  width: 100%;
+  height: 50px;
+  padding: 0 20px;
+}
+
+.nonSBHSLogin input:first-of-type {
+  margin-bottom: 30px;
+}
+
+.nonSBHSLogin input:invalid {
+  border: 1px solid var(--error-red);
+}
+
+.errorMessage {
+  color: var(--error-red);
+  margin: 0 0 30px 0;
+}
+
+.submitButton {
+  font-size: 20px;
+  width: 150px;
+  height: 50px;
+  border: 0;
+  margin: 0 auto 5px;
+}
+
+@media (min-width: 1000px) {
+  main {
+    width: 70%;
+  }
+}
+
+@media (max-width: 1200px) {
+  .SBHSButton {
+    width: 70%;
+  }
+
+  .nonSBHSLogin {
+    width: 70%;
+  }
+}
+
+@media (max-width: 700px) {
+  .SBHSButton {
+    width: 100%;
+  }
+
+  .nonSBHSLogin {
+    width: 100%;
+  }
+}

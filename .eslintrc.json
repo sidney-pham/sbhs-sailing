@@ -25,6 +25,8 @@
         "react/jsx-filename-extension": 0,
         "react/self-closing-comp": 0,
         "react/prop-types": 0,
+        "react/no-multi-comp": 0,
+        "react/no-unescaped-entities": 1,
 
         "jsx-a11y/anchor-is-valid": ["error", {
             "components": ["Link"],
