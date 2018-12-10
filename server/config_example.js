@@ -1,7 +1,7 @@
 // Fill this out and rename it to config.js.
 const config = {
   // Port the server runs on.
-  port: '...',
+  port: 8080,
   // E.g., postgres://localhost:5432/sailing
   database: '...',
   session: {
